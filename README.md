@@ -25,8 +25,8 @@ from PIL import Image
 # open an image using Pillow
 pil_img = Image.open(img_path)
 
-# construct a new Metadata object
-meta = Metadata(img)
+# construct a new Metadata object based on the PIL Image.
+meta = Metadata(pil_img)
 
 # retrieve a dictionary with the image's metadata
 meta_dict = meta.metadata
