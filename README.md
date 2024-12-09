@@ -43,6 +43,8 @@ exif_date = meta.search_metadata(prefix='exif', localname='DateTime')
 
 ## Dependencies
 
+The following package versions were used when this was last updated, the use of different versions has not been tested and may affect the functionality of the tool.
+
 ```commandline
 Python 3.10.12
 lxml 5.2.2
