@@ -1,3 +1,11 @@
+# Class for Python-based XMP and Exif extraction
+#
+# Author: Peter Jakubowski
+# Date: 12/8/2024
+# Description: Python class that transforms XMP and Exif metadata
+# into a standard Python dictionary from a Pillow (PIL) source image.
+#
+
 from lxml import etree
 from collections import deque
 from PIL.Image import ExifTags
