@@ -19,7 +19,7 @@ This class parses the XMP XML and creates a dictionary where the parent keys are
 ## Usage
 
 ```commandline
-from pillow_metadata import Metadata
+from pillow_metadata.pillow_metadata import Metadata
 from PIL import Image
 
 # open an image using Pillow
