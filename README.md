@@ -41,6 +41,15 @@ exif_date = meta.search_metadata(prefix='exif', localname='DateTime')
 
 ```
 
+## Installation
+
+Install with pip using the link to the github project.
+
+```commandline
+pip install https://github.com/peterjakubowski/Pillow-Metadata/archive/main.zip
+
+```
+
 ## Dependencies
 
 The following package versions were used when this was last updated, the use of different versions has not been tested and may affect the functionality of the tool.
