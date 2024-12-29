@@ -6,6 +6,8 @@
 # into a standard Python dictionary from a Pillow (PIL) source image.
 #
 
+from dataclasses import dataclass, InitVar, field
+from typing import AnyStr, ByteString, Dict
 from lxml import etree
 from collections import deque
 from PIL import Image
@@ -14,6 +16,106 @@ import dateutil.parser
 from pathlib import Path
 
 
+# ========================
+# === Helper Functions ===
+# ========================
+
+def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
+    """
+    Parses the raw XMP packet XML and returns it as an ElementTree using lxml.
+
+    :param _xmp_xml: Raw XMP pack as a byte string
+    :return: XMP metadata as an XML ElementTree
+    """
+
+    try:
+        _xmp_xml = etree.ElementTree(etree.fromstring(_xmp_xml.decode()))
+
+    except etree.XMLSyntaxError as xse:
+        print(f'Type Error: {xse}')
+
+    return _xmp_xml
+
+
+def build_xmp_dictionary(_xmp: etree._ElementTree) -> Dict:
+    """
+    Traverses the XMP XML and populates the metadata dictionary.
+    Handles nested elements and different XML structures.
+    The algorithm uses a queue to manage tree traversal.
+
+    :param _xmp: XML (packet) tree containing image XMP metadata
+    :return: Dictionary of XMP metadata
+    """
+
+    if not isinstance(_xmp, etree._ElementTree):
+        raise TypeError('Type Error: Invalid XMP given, unable to parse XML tree.')
+
+    xmp_metadata = {}
+
+    q = deque([(_xmp.getroot(), xmp_metadata)])  # Start with the root element and the main metadata dict
+    while q:
+        ele, parent = q.popleft()  # Get the current element and its parent dictionary
+        name = etree.QName(ele.tag).localname  # Extract the element's name
+        if name not in parent:
+            parent[name] = {}  # Create a new dictionary entry if the element name isn't already present
+
+        # Handle attributes
+        if ele.attrib:
+            prefix_map = {}
+            for _key, _val in ele.nsmap.items():
+                prefix_map[_val] = _key  # Create a map to resolve prefixes
+            for key, val in ele.attrib.items():
+                tag = etree.QName(key)
+                if (prefix := prefix_map[tag.namespace] if tag.namespace in prefix_map else tag.namespace) \
+                        not in parent[name]:
+                    parent[name][prefix] = {}  # Create a dictionary for the prefix if it doesn't exist
+                if (tname := tag.localname) not in parent[name][prefix]:
+                    parent[name][prefix][tname] = val  # Store the attribute value
+
+        # Handle child elements
+        for child in ele:
+            # Special handling for Bag, Seq, and Alt elements
+            if (cname := etree.QName(child.tag).localname) in ('Bag', 'Seq', 'Alt'):
+                del parent[name]  # Remove the element if it is Bag, Seq, or Alt
+                if ele.prefix not in parent:
+                    parent[ele.prefix] = {}  # Create an entry for the prefix
+                parent[ele.prefix][name] = []  # Create a list to store the children of Bag, Seq, or Alt
+                for li in child:
+                    # Special handling for Alt elements to get default value
+                    if cname == 'Alt':
+                        for key, val in li.attrib.items():
+                            if val == 'x-default':
+                                parent[ele.prefix][name] = li.text
+                    else:
+                        # Append the children's attributes or text
+                        parent[ele.prefix][name].append(li.attrib if li.attrib else li.text)
+            else:
+                q.append((child, parent[name]))  # Add the child element to the queue for processing
+
+    return xmp_metadata
+
+
+def build_exif_dictionary(_exif: Image.Exif) -> Dict:
+    """
+    Reads EXIF data and creates a metadata dictionary with human-readable tag names.
+
+    :param _exif: Image Exif data
+    :return: Dictionary containing Image Exif data
+    """
+
+    exif_metadata = {}
+
+    for tag, value in _exif.items():
+        exif_metadata[Image.ExifTags.TAGS[tag]] = value  # Use ExifTags to get human-readable tag names
+
+    return exif_metadata
+
+# ======================
+# === Metadata Class ===
+# ======================
+
+
+@dataclass(frozen=False)
 class Metadata:
     """
     Extracts and organizes metadata (XMP and EXIF) from a Pillow image
@@ -24,7 +126,13 @@ class Metadata:
         Must have 'xmp' in its .info dictionary and Exif data available via .getexif().
     """
 
-    def __init__(self, pil_image: Image.Image):
+    pil_image: InitVar[Image.Image]
+    metadata: Dict = field(default_factory=dict, init=False)  # Initialize an empty dictionary to store metadata
+    filename: AnyStr = field(default_factory=str, init=False)  # Store the filename for later use
+    xmp: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
+    exif: Image.Exif = field(default_factory=dict, init=False)  # Keep the raw EXIF data from the image
+
+    def __post_init__(self, pil_image: Image.Image) -> None:
         """
         Initializes Metadata object with image data.
 
@@ -34,87 +142,20 @@ class Metadata:
         if not isinstance(pil_image, Image.Image):
             raise TypeError("pil_image must be a PIL.Image.Image object.")
 
-        self.metadata = {}  # Initialize an empty dictionary to store metadata
-        self.filename = pil_image.filename  # Store the filename for later use
-        # Get XMP data (XML packet) from the image's info dictionary
-        self.xmp = pil_image.info['xmp'] if 'xmp' in pil_image.info else None
-        self.exif = pil_image.getexif()  # Get EXIF data from the image
-        self.build_meta_dict()  # Build the metadata dictionary
+        if hasattr(pil_image, 'filename'):
+            self.filename = pil_image.filename
 
-    def read_xmp_xml(self):
-        """
-        Parses the XMP data using lxml.etree.
+        if 'xmp' in pil_image.info:
+            self.xmp = parse_xml(_xmp_xml=pil_image.info['xmp'])
+            if 'xmpmeta' in (xmp_dict := build_xmp_dictionary(_xmp=self.xmp)):
+                self.metadata['xmpmeta'] = xmp_dict['xmpmeta']
 
-        :return: etree._ElementTree: An ElementTree object representing the parsed XMP XML.
-        """
+        if exif := pil_image.getexif():
+            self.exif = exif
+            if exif_dict := build_exif_dictionary(_exif=self.exif):
+                self.metadata['exif'] = exif_dict  # Create an 'exif' entry in the main metadata dictionary
 
-        if self.xmp:
-            return etree.ElementTree(etree.fromstring(self.xmp.decode()))
-
-    def read_exif(self):
-        """
-        Reads and adds EXIF data to the metadata dictionary.
-
-        :return:
-        """
-        if self.exif:
-            self.metadata['exif'] = {}  # Create an 'exif' entry in the main metadata dictionary
-            for tag, value in self.exif.items():
-                self.metadata['exif'][Image.ExifTags.TAGS[tag]] = value  # Use ExifTags to get human-readable tag names
-
-    def build_meta_dict(self):
-        """
-        Recursively parses the XMP XML and populates the metadata dictionary.
-        Handles nested elements and different XML structures.
-        The algorithm uses a queue to manage tree traversal.
-
-        :return:
-        """
-
-        xmp_xml = self.read_xmp_xml()
-        if xmp_xml:
-            q = deque([(xmp_xml.getroot(), self.metadata)])  # Start with the root element and the main metadata dict
-            while q:
-                ele, parent = q.popleft()  # Get the current element and its parent dictionary
-                name = etree.QName(ele.tag).localname  # Extract the element's name
-                if name not in parent:
-                    parent[name] = {}  # Create a new dictionary entry if the element name isn't already present
-
-                # Handle attributes
-                if ele.attrib:
-                    prefix_map = {}
-                    for _key, _val in ele.nsmap.items():
-                        prefix_map[_val] = _key  # Create a map to resolve prefixes
-                    for key, val in ele.attrib.items():
-                        tag = etree.QName(key)
-                        if (prefix := prefix_map[tag.namespace] if tag.namespace in prefix_map else tag.namespace) \
-                                not in parent[name]:
-                            parent[name][prefix] = {}  # Create a dictionary for the prefix if it doesn't exist
-                        if (tname := tag.localname) not in parent[name][prefix]:
-                            parent[name][prefix][tname] = val  # Store the attribute value
-
-                # Handle child elements
-                for child in ele:
-                    # Special handling for Bag, Seq, and Alt elements
-                    if (cname := etree.QName(child.tag).localname) in ('Bag', 'Seq', 'Alt'):
-                        del parent[name]  # Remove the element if it is Bag, Seq, or Alt
-                        if ele.prefix not in parent:
-                            parent[ele.prefix] = {}  # Create an entry for the prefix
-                        parent[ele.prefix][name] = []  # Create a list to store the children of Bag, Seq, or Alt
-                        for li in child:
-                            # Special handling for Alt elements to get default value
-                            if cname == 'Alt':
-                                for key, val in li.attrib.items():
-                                    if val == 'x-default':
-                                        parent[ele.prefix][name] = li.text
-                            else:
-                                # Append the children's attributes or text
-                                parent[ele.prefix][name].append(li.attrib if li.attrib else li.text)
-                    else:
-                        q.append((child, parent[name]))  # Add the child element to the queue for processing
-        self.read_exif()  # Read exif data after processing xmp data
-
-    def search_metadata(self, prefix: str, localname: str):
+    def search_metadata(self, prefix: str, localname: str) -> str | None:
         """
         Searches the metadata dictionary for a specific element using breadth-first search.
 
@@ -122,6 +163,7 @@ class Metadata:
         :param localname: (str) The local name of the element.
         :return:
         """
+
         q = deque([self.metadata])
         while q:
             cur = q.popleft()
@@ -134,7 +176,7 @@ class Metadata:
                         q.append(cur[key])
         return None
 
-    def get_capture_date(self):
+    def get_capture_date(self) -> str | None:
         """
         Attempts to retrieve the capture date from XMP or EXIF data, falling back to file creation time.
 
@@ -154,9 +196,10 @@ class Metadata:
         elif creation_date := Path(self.filename):  # Fallback to file creation time
             date = datetime.fromtimestamp(creation_date.stat().st_birthtime)
             return date.strftime('%A, %B %d, %Y')
+
         return None
 
-    def image_info(self):
+    def image_info(self) -> str:
         """
         Generates a human-readable string summarizing key image metadata.
 
