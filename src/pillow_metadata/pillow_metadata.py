@@ -8,6 +8,7 @@
 
 from dataclasses import dataclass, InitVar, field
 from typing import AnyStr, ByteString, Dict
+from pydantic import BaseModel, Field, ConfigDict, PositiveInt, ValidationError
 from lxml import etree
 from collections import deque
 from PIL import Image
@@ -37,22 +38,22 @@ def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
     return _xmp_xml
 
 
-def build_xmp_dictionary(_xmp: etree._ElementTree) -> Dict:
+def build_xmp_dictionary(_xmp_xml: etree._ElementTree) -> Dict:
     """
     Traverses the XMP XML and populates the metadata dictionary.
     Handles nested elements and different XML structures.
     The algorithm uses a queue to manage tree traversal.
 
-    :param _xmp: XML (packet) tree containing image XMP metadata
+    :param _xmp_xml: XML (packet) tree containing image XMP metadata
     :return: Dictionary of XMP metadata
     """
 
-    if not isinstance(_xmp, etree._ElementTree):
+    if not isinstance(_xmp_xml, etree._ElementTree):
         raise TypeError('Type Error: Invalid XMP given, unable to parse XML tree.')
 
     xmp_metadata = {}
 
-    q = deque([(_xmp.getroot(), xmp_metadata)])  # Start with the root element and the main metadata dict
+    q = deque([(_xmp_xml.getroot(), xmp_metadata)])  # Start with the root element and the main metadata dict
     while q:
         ele, parent = q.popleft()  # Get the current element and its parent dictionary
         name = etree.QName(ele.tag).localname  # Extract the element's name
@@ -110,9 +111,80 @@ def build_exif_dictionary(_exif: Image.Exif) -> Dict:
 
     return exif_metadata
 
-# ======================
-# === Metadata Class ===
-# ======================
+
+def search_for_schema(_metadata: Dict, schema: str) -> Dict | None:
+    """
+    Search for the schema in the metadata dictionary:
+
+    :param _metadata: dictionary.
+    :return: dictionary.
+    """
+
+    q = deque([_metadata])
+    while q:
+        cur = q.popleft()
+        if isinstance(cur, dict):
+            if schema in cur and isinstance(cur[schema], dict):
+                return cur[schema]
+            for key in cur.keys():
+                if isinstance(cur[key], dict):
+                    q.append(cur[key])
+
+    return None
+
+
+# ========================
+# === Metadata Classes ===
+# ========================
+
+
+class Xmp(BaseModel):
+    model_config = ConfigDict(extra='ignore')
+    CreateDate: datetime = None
+    ModifyDate: datetime = None
+    MetadataDate: datetime = None
+    CreatorTool: str = ''
+    Rating: PositiveInt = Field(None, ge=1, le=5)
+
+
+class XmpMM(BaseModel):
+    model_config = ConfigDict(extra='ignore')
+    DocumentID: str = None
+    OriginalDocumentID: str = None
+    InstanceID: str = None
+    History: list[dict] = None
+
+
+class Photoshop(BaseModel):
+    model_config = ConfigDict(extra='ignore')
+    DateCreated: datetime = None
+    Urgency: PositiveInt = None
+    City: str = None
+    State: str = None
+
+
+class Dc(BaseModel):
+    model_config = ConfigDict(extra='ignore')
+    format: str = None
+    rights: str = None
+    description: str = None
+    subject: list[str] = None
+
+
+class Aux(BaseModel):
+    model_config = ConfigDict(extra='ignore')
+    SerialNumber: str = None
+    LensInfo: str = None
+    Lens: str = None
+    LensSerialNumber: str = None
+    FlashCompensation: str = None
+    FujiRatingAlreadyApplied: bool = None
+
+
+class Tiff(BaseModel):
+    model_config = ConfigDict(extra='ignore')
+    Make: str = None
+    Model: str = None
 
 
 @dataclass(frozen=False)
@@ -129,8 +201,15 @@ class Metadata:
     pil_image: InitVar[Image.Image]
     metadata: Dict = field(default_factory=dict, init=False)  # Initialize an empty dictionary to store metadata
     filename: AnyStr = field(default_factory=str, init=False)  # Store the filename for later use
-    xmp: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
+    xmp_xml: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
     exif: Image.Exif = field(default_factory=dict, init=False)  # Keep the raw EXIF data from the image
+    # Metadata schemas
+    xmp: Xmp = field(default_factory=Xmp, init=False)
+    xmpMM: XmpMM = field(default_factory=XmpMM, init=False)
+    photoshop: Photoshop = field(default_factory=Photoshop, init=False)
+    dc: Dc = field(default_factory=Dc, init=False)
+    aux: Aux = field(default_factory=Aux, init=False)
+    tiff: Tiff = field(default_factory=Tiff, init=False)
 
     def __post_init__(self, pil_image: Image.Image) -> None:
         """
@@ -146,14 +225,30 @@ class Metadata:
             self.filename = pil_image.filename
 
         if 'xmp' in pil_image.info:
-            self.xmp = parse_xml(_xmp_xml=pil_image.info['xmp'])
-            if 'xmpmeta' in (xmp_dict := build_xmp_dictionary(_xmp=self.xmp)):
+            self.xmp_xml = parse_xml(_xmp_xml=pil_image.info['xmp'])
+            if 'xmpmeta' in (xmp_dict := build_xmp_dictionary(_xmp_xml=self.xmp_xml)):
                 self.metadata['xmpmeta'] = xmp_dict['xmpmeta']
 
         if exif := pil_image.getexif():
             self.exif = exif
             if exif_dict := build_exif_dictionary(_exif=self.exif):
                 self.metadata['exif'] = exif_dict  # Create an 'exif' entry in the main metadata dictionary
+
+        if self.metadata:
+            if xmp_schema := search_for_schema(_metadata=self.metadata, schema='xmp'):
+                self.xmp = Xmp(**xmp_schema)
+
+            if xmpMM_schema := search_for_schema(_metadata=self.metadata, schema='xmpMM'):
+                self.xmpMM = XmpMM(**xmpMM_schema)
+
+            if photoshop_schema := search_for_schema(_metadata=self.metadata, schema='photoshop'):
+                self.photoshop = Photoshop(**photoshop_schema)
+
+            if dc_schema := search_for_schema(_metadata=self.metadata, schema='dc'):
+                self.dc = Dc(**dc_schema)
+
+            if tiff_schema := search_for_schema(_metadata=self.metadata, schema='tiff'):
+                self.tiff = Tiff(**tiff_schema)
 
     def search_metadata(self, prefix: str, localname: str) -> str | None:
         """
