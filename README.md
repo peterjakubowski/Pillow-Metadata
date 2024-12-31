@@ -19,7 +19,7 @@ This class parses the XMP XML and creates a dictionary where the parent keys are
 ## Usage
 
 ```commandline
-from pillow_metadata import Metadata
+from pillow_metadata.pillow_metadata import Metadata
 from PIL import Image
 
 # open an image using Pillow
@@ -38,6 +38,15 @@ filename = meta.filename
 # search the image's metadata
 xmp_date = meta.search_metadata(prefix='xmp', localname='CreateDate')
 exif_date = meta.search_metadata(prefix='exif', localname='DateTime')
+
+```
+
+## Installation
+
+Install with pip using the link to the github project.
+
+```commandline
+pip install https://github.com/peterjakubowski/Pillow-Metadata/archive/main.zip
 
 ```
 
