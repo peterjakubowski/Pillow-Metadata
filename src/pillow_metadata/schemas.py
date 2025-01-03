@@ -15,13 +15,26 @@ from datetime import datetime
 
 
 class Xmp(BaseModel):
-    model_config = ConfigDict(extra='ignore')
-    CreateDate: datetime = None
-    ModifyDate: datetime = None
-    MetadataDate: datetime = None
-    CreatorTool: str = None
-    Rating: PositiveInt = Field(None, ge=1, le=5)
+    """
+     Properties in the XMP namespace.
+     The XMP basic namespace contains properties that provide basic descriptive information.
+     The namespace URI shall be "http://ns.adobe.com/xap/1.0/".
+     The preferred namespace prefix is "xmp".
 
+     """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
+    model_config = ConfigDict(extra='ignore')
+    # XMP properties
+    CreateDate: datetime = None  # The date and time the resource was created
+    CreatorTool: str = None  # The name of the first known tool used to create the resource
+    Identifier: list[str] = None  # Unordered array of text strings that identify the resource
+    Label: str = None  # A word or short phrase that identifies a resource as a member of a collection
+    MetadataDate: datetime = None  # Date and time that any metadata for this resource was last changed
+    ModifyDate: datetime = None  # Date and time the resource was last modified
+    Nickname: str = None  # A short informal name for the resource
+    Rating: int = Field(None, ge=-1, le=5)  # A user-assigned rating for this file
+    # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
 class XmpMM(BaseModel):
     model_config = ConfigDict(extra='ignore')
