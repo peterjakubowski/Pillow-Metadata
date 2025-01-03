@@ -5,14 +5,9 @@
 # Description: Python class that transforms XMP and Exif metadata
 # into a standard Python dictionary from a Pillow (PIL) source image.
 #
-from dataclasses import InitVar
-# from dataclasses import dataclass, InitVar, field
-# from dataclasses import InitVar
-from typing import AnyStr, ByteString, Dict, Any
+
 from pydantic import BaseModel, Field, ConfigDict, PositiveInt
-from pydantic.dataclasses import dataclass
 from datetime import datetime
-from helpers import search_for_schema
 
 # ========================
 # ==== Schema Classes ====
@@ -68,24 +63,6 @@ class Tiff(BaseModel):
     Model: str = None
 
 
-# class Schemas(BaseModel):
-#     xmp: Xmp
-#     xmpMM: XmpMM
-#     photoshop: Photoshop
-#     dc: Dc
-#     aux: Aux
-#     tiff: Tiff
-
-# @dataclass
-# class Schemas:
-#     xmp: Xmp = Field(default_factory=Xmp, init=False)
-#     xmpMM: XmpMM = Field(default_factory=XmpMM, init=False)
-#     photoshop: Photoshop = Field(default_factory=Photoshop, init=False)
-#     dc: Dc = Field(default_factory=Dc, init=False)
-#     aux: Aux = Field(default_factory=Aux, init=False)
-#     tiff: Tiff = Field(default_factory=Tiff, init=True)
-
-
 class Schemas(BaseModel):
     xmp: Xmp = Field(default=Xmp(**{}), init=False)
     xmpMM: XmpMM = Field(default=XmpMM(**{}), init=False)
@@ -93,3 +70,4 @@ class Schemas(BaseModel):
     dc: Dc = Field(default=Dc(**{}), init=False)
     aux: Aux = Field(default=Aux(**{}), init=True)
     tiff: Tiff = Field(default=Tiff(**{}), init=False)
+    
