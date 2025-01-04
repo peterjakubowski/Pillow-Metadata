@@ -27,11 +27,15 @@ import helpers
 class Metadata:
     """
     Extracts and organizes metadata (XMP and EXIF) from a Pillow image
-    into a standardized Python dictionary.
+    into a standardized Python dictionary. The provide image must have 'xmp' in its .info
+    dictionary and Exif data available via .getexif().
 
     Args:
         pil_image (PIL.Image.Image): A Pillow image object containing metadata.
-        Must have 'xmp' in its .info dictionary and Exif data available via .getexif().
+
+    Attributes:
+        metadata_dict:
+
     """
 
     pil_image: InitVar[Image.Image]
