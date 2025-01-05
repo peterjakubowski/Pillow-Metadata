@@ -36,6 +36,50 @@ class Xmp(BaseModel):
     Rating: int = Field(None, ge=-1, le=5)  # A user-assigned rating for this file
     # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
+
+class XmpRights(BaseModel):
+    """
+    Properties in the XMP Rights Management namespace.
+
+    The XMP Rights Management namespace contains properties that provide
+    information regarding the legal restriction sassociated with a resource.
+
+    The namespace URI shall be "http://ns.adobe.com/xap/1.0/rights/".
+
+    The preferred namespace prefix is xmpRights.
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
+    model_config = ConfigDict(extra='ignore')
+    # XMPRights properties
+    Certificate: str = None  # A Web URL for a rights management certificate
+    Marked: bool = None  # Rights-managed resource when true. Public-domain resource when false. State unknown if None
+    Owner: list = None  # A list of legal owners of the resource
+    UsageTerms: str = None  # Text instructions on how a resource can be legally used
+    WebStatement: str = None  # A Web URL for a statement of the ownership and usage rights for this resource.
+
+
+class Iptc4XmpCore(BaseModel):
+    """
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
+    model_config = ConfigDict(extra='ignore')
+    # Iptc4XmpCore properties
+    AltTextAccessibility: str = Field(default=None, title='Alt Text')
+
+class Iptc4XmpExt(BaseModel):
+    """
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
+    model_config = ConfigDict(extra='ignore')
+    # Iptc4XmpExt properties
+    PersonInImage: list[str] = None
+
 class XmpMM(BaseModel):
     model_config = ConfigDict(extra='ignore')
     DocumentID: str = None
@@ -77,4 +121,7 @@ class Tiff(BaseModel):
 
 
 class Schemas(BaseModel):
+    xmpRights: XmpRights = Field(default=XmpRights(**{}))
+    Iptc4xmpCore: Iptc4XmpCore = Field(default=Iptc4XmpCore(**{}))
+    Iptc4xmpExt: Iptc4XmpExt = Field(default=Iptc4XmpExt(**{}))
     
