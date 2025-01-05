@@ -62,6 +62,13 @@ class XmpRights(BaseModel):
 
     The preferred namespace prefix is xmpRights.
 
+    Attributes:
+        Certificate:
+        Marked:
+        Owner:
+        UsageTerms:
+        WebStatement:
+
     """
 
     # Configure the BaseModel to ignore any extra attributes given at creation
@@ -97,15 +104,24 @@ class XmpMM(BaseModel):
 class Iptc4XmpCore(BaseModel):
     """
 
+    Attributes:
+        AltTextAccessibility:
+        Location:
+
     """
 
     # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # Iptc4XmpCore properties
     AltTextAccessibility: str = Field(default=None, title='Alt Text')
+    Location: str = None
+
 
 class Iptc4XmpExt(BaseModel):
     """
+
+    Attributes:
+        PersonInImage:
 
     """
 
@@ -116,7 +132,19 @@ class Iptc4XmpExt(BaseModel):
 
 
 class Photoshop(BaseModel):
+    """
+
+    Attributes:
+        DateCreated:
+        Urgency:
+        City:
+        State:
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
+    # Photoshop properties
     DateCreated: datetime = None
     Urgency: PositiveInt = None
     City: str = None
@@ -124,7 +152,19 @@ class Photoshop(BaseModel):
 
 
 class Dc(BaseModel):
+    """
+
+    Attributes:
+        format:
+        rights:
+        description:
+        subject:
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
+    # DC properties
     format: str = None
     rights: str = None
     description: str = None
@@ -132,7 +172,21 @@ class Dc(BaseModel):
 
 
 class Aux(BaseModel):
+    """
+
+    Attributes:
+        SerialNumber:
+        LensInfo:
+        Lens:
+        LensSerialNumber:
+        FlashCompensation:
+        FujiRatingAlreadyApplied:
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
+    # Aux properties
     SerialNumber: str = None
     LensInfo: str = None
     Lens: str = None
@@ -142,12 +196,76 @@ class Aux(BaseModel):
 
 
 class Tiff(BaseModel):
+    """
+
+    Attributes:
+        Make:
+        Model:
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
+    # Tiff properties
     Make: str = None
     Model: str = None
 
 
+class Exif(BaseModel):
+    """
+
+    Attributes:
+        ResolutionUnit:
+        ExifOffset:
+        ImageDescription:
+        Make:
+        Model:
+        Software:
+        Orientation:
+        DateTime:
+        YResolution:
+        Copyright:
+        XResolution:
+        Artist:
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
+    model_config = ConfigDict(extra='ignore')
+    # Exif properties
+    ResolutionUnit: PositiveInt = None
+    ExifOffset: PositiveInt = None
+    ImageDescription: str = None
+    Make: str = None
+    Model: str = None
+    Software: str = None
+    Orientation: PositiveInt = None
+    DateTime: datetime | str = None
+    DateTimeOriginal: datetime = None
+    YResolution: float = None
+    Copyright: str = None
+    XResolution: float = None
+    Artist: str = None
+
+
 class Schemas(BaseModel):
+    """
+    Schemas structure.
+
+    Attributes:
+        xmp:
+        xmpRights:
+        xmpMM:
+        Iptc4xmpCore:
+        Iptc4xmpExt:
+        photoshop:
+        dc:
+        aux:
+        tiff:
+        exif:
+
+    """
+
     xmp: Xmp = Field(default=Xmp(**{}))
     xmpRights: XmpRights = Field(default=XmpRights(**{}))
     xmpMM: XmpMM = Field(default=XmpMM(**{}))
@@ -157,4 +275,5 @@ class Schemas(BaseModel):
     dc: Dc = Field(default=Dc(**{}))
     aux: Aux = Field(default=Aux(**{}))
     tiff: Tiff = Field(default=Tiff(**{}))
+    exif: Exif = Field(default=Exif(**{}))
     
