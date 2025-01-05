@@ -17,23 +17,37 @@ from datetime import datetime
 class Xmp(BaseModel):
     """
      Properties in the XMP namespace.
+
      The XMP basic namespace contains properties that provide basic descriptive information.
+
      The namespace URI shall be "http://ns.adobe.com/xap/1.0/".
+
      The preferred namespace prefix is "xmp".
+
+     Attributes:
+         CreateDate: The date and time the resource was created.
+         CreatorTool: The name of the first known tool used to create the resource.
+         Identifier: Unordered array of text strings that identify the resource.
+         Label: A word or short phrase that identifies a resource as a member of a collection.
+         MetadataDate: Date and time that any metadata for this resource was last changed.
+         ModifyDate: Date and time the resource was last modified.
+         Nickname: A short informal name for the resource.
+         Rating: A user-assigned rating for this file.
+         # Thumbnails: An alternative array of thumbnail images for a file.
 
      """
 
     # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # XMP properties
-    CreateDate: datetime = None  # The date and time the resource was created
-    CreatorTool: str = None  # The name of the first known tool used to create the resource
-    Identifier: list[str] = None  # Unordered array of text strings that identify the resource
-    Label: str = None  # A word or short phrase that identifies a resource as a member of a collection
-    MetadataDate: datetime = None  # Date and time that any metadata for this resource was last changed
-    ModifyDate: datetime = None  # Date and time the resource was last modified
-    Nickname: str = None  # A short informal name for the resource
-    Rating: int = Field(None, ge=-1, le=5)  # A user-assigned rating for this file
+    CreateDate: datetime = None
+    CreatorTool: str = None
+    Identifier: list[str] = None
+    Label: str = None
+    MetadataDate: datetime = None
+    ModifyDate: datetime = None
+    Nickname: str = None
+    Rating: int = Field(None, ge=-1, le=5)
     # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
 
