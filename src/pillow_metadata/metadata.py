@@ -79,6 +79,24 @@ class Metadata:
                 except ValidationError as ve:
                     print(ve.json())
 
+            if xmpRights_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='xmpRights'):
+                try:
+                    self.metadata.xmpRights = schemas.XmpRights(**xmpRights_schema)
+                except ValidationError as ve:
+                    print(ve.json())
+
+            if iptc4XmpCore_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='Iptc4xmpCore'):
+                try:
+                    self.metadata.Iptc4xmpCore = schemas.Iptc4XmpCore(**iptc4XmpCore_schema)
+                except ValidationError as ve:
+                    print(ve.json())
+
+            if iptc4XmpExt_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='Iptc4xmpExt'):
+                try:
+                    self.metadata.Iptc4xmpExt = schemas.Iptc4XmpExt(**iptc4XmpExt_schema)
+                except ValidationError as ve:
+                    print(ve.json())
+
             if xmpMM_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='xmpMM'):
                 try:
                     self.metadata.xmpMM = schemas.XmpMM(**xmpMM_schema)
@@ -97,9 +115,21 @@ class Metadata:
                 except ValidationError as ve:
                     print(ve.json())
 
+            if aux_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='aux'):
+                try:
+                    self.metadata.aux = schemas.Aux(**aux_schema)
+                except ValidationError as ve:
+                    print(ve.json())
+
             if tiff_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='tiff'):
                 try:
                     self.metadata.tiff = schemas.Tiff(**tiff_schema)
+                except ValidationError as ve:
+                    print(ve.json())
+
+            if exif_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='exif'):
+                try:
+                    self.metadata.exif = schemas.Exif(**exif_schema)
                 except ValidationError as ve:
                     print(ve.json())
 
