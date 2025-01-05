@@ -35,6 +35,10 @@ class Metadata:
 
     Attributes:
         metadata_dict:
+        filename:
+        xmp_xml:
+        exif:
+        metadata:
 
     """
 
