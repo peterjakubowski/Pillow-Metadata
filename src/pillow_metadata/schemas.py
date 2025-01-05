@@ -74,6 +74,26 @@ class XmpRights(BaseModel):
     WebStatement: str = None  # A Web URL for a statement of the ownership and usage rights for this resource.
 
 
+class XmpMM(BaseModel):
+    """
+
+    Attributes:
+        DocumentID:
+        OriginalDocumentID:
+        InstanceID:
+        History:
+
+    """
+
+    # Configure the BaseModel to ignore any extra attributes given at creation
+    model_config = ConfigDict(extra='ignore')
+    # XmpMM properties
+    DocumentID: str = None
+    OriginalDocumentID: str = None
+    InstanceID: str = None
+    History: list[dict] = None
+
+
 class Iptc4XmpCore(BaseModel):
     """
 
@@ -93,13 +113,6 @@ class Iptc4XmpExt(BaseModel):
     model_config = ConfigDict(extra='ignore')
     # Iptc4XmpExt properties
     PersonInImage: list[str] = None
-
-class XmpMM(BaseModel):
-    model_config = ConfigDict(extra='ignore')
-    DocumentID: str = None
-    OriginalDocumentID: str = None
-    InstanceID: str = None
-    History: list[dict] = None
 
 
 class Photoshop(BaseModel):
