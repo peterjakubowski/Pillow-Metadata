@@ -121,7 +121,13 @@ class Tiff(BaseModel):
 
 
 class Schemas(BaseModel):
+    xmp: Xmp = Field(default=Xmp(**{}))
     xmpRights: XmpRights = Field(default=XmpRights(**{}))
+    xmpMM: XmpMM = Field(default=XmpMM(**{}))
     Iptc4xmpCore: Iptc4XmpCore = Field(default=Iptc4XmpCore(**{}))
     Iptc4xmpExt: Iptc4XmpExt = Field(default=Iptc4XmpExt(**{}))
+    photoshop: Photoshop = Field(default=Photoshop(**{}))
+    dc: Dc = Field(default=Dc(**{}))
+    aux: Aux = Field(default=Aux(**{}))
+    tiff: Tiff = Field(default=Tiff(**{}))
     
