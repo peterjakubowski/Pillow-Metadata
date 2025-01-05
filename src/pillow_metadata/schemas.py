@@ -77,10 +77,4 @@ class Tiff(BaseModel):
 
 
 class Schemas(BaseModel):
-    xmp: Xmp = Field(default=Xmp(**{}), init=False)
-    xmpMM: XmpMM = Field(default=XmpMM(**{}), init=False)
-    photoshop: Photoshop = Field(default=Photoshop(**{}), init=False)
-    dc: Dc = Field(default=Dc(**{}), init=False)
-    aux: Aux = Field(default=Aux(**{}), init=True)
-    tiff: Tiff = Field(default=Tiff(**{}), init=False)
     
