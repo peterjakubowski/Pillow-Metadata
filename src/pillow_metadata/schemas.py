@@ -56,6 +56,7 @@ class Xml:
         self.xmp_xml = xmp_xml
 
 
+class Xmp(Xml):
     """
      Properties in the XMP namespace.
 
@@ -78,17 +79,19 @@ class Xml:
 
      """
 
-    model_config = ConfigDict(extra='ignore')
     # XMP properties
-    CreatorTool: str = None
+    CreateDate: datetime = XPath(tag='{http://ns.adobe.com/xap/1.0/}CreateDate', datatype='text')
+    CreatorTool: str = XPath(tag='{http://ns.adobe.com/xap/1.0/}CreatorTool', datatype='text')
     Identifier: list[str] = None
     Label: str = None
     MetadataDate: datetime = None
     ModifyDate: datetime = None
     Nickname: str = None
+    Rating: int = None
     # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
 
+class XmpRights(Xml):
     """
     Properties in the XMP Rights Management namespace.
 
@@ -108,7 +111,6 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # XMPRights properties
     Certificate: str = None  # A Web URL for a rights management certificate
     Marked: bool = None  # Rights-managed resource when true. Public-domain resource when false. State unknown if None
@@ -117,6 +119,7 @@ class Xml:
     WebStatement: str = None  # A Web URL for a statement of the ownership and usage rights for this resource.
 
 
+class XmpMM(Xml):
     """
 
     Attributes:
@@ -127,7 +130,6 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # XmpMM properties
     DocumentID: str = None
     OriginalDocumentID: str = None
@@ -135,6 +137,7 @@ class Xml:
     History: list[dict] = None
 
 
+class Iptc4XmpCore(Xml):
     """
 
     Attributes:
@@ -143,11 +146,12 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # Iptc4XmpCore properties
+    AltTextAccessibility: str = None
     Location: str = None
 
 
+class Iptc4XmpExt(Xml):
     """
 
     Attributes:
@@ -155,10 +159,11 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # Iptc4XmpExt properties
+    PersonInImage: list[str] = XPath(tag='{http://iptc.org/std/Iptc4xmpExt/2008-02-29/}PersonInImage', datatype='bag')
 
 
+class Photoshop(Xml):
     """
 
     Attributes:
@@ -169,13 +174,14 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # Photoshop properties
     DateCreated: datetime = None
+    Urgency: int = None
     City: str = None
     State: str = None
 
 
+class Dc(Xml):
     """
 
     Attributes:
@@ -186,7 +192,6 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # DC properties
     format: str = None
     rights: str = None
@@ -195,6 +200,7 @@ class Xml:
     subject: list[str] = None
 
 
+class Aux(Xml):
     """
 
     Attributes:
@@ -207,7 +213,6 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # Aux properties
     SerialNumber: str = None
     LensInfo: str = None
@@ -217,6 +222,7 @@ class Xml:
     FujiRatingAlreadyApplied: bool = None
 
 
+class Tiff(Xml):
     """
 
     Attributes:
@@ -225,12 +231,12 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # Tiff properties
     Make: str = None
     Model: str = None
 
 
+class Exif(Xml):
     """
 
     Attributes:
@@ -249,13 +255,14 @@ class Xml:
 
     """
 
-    model_config = ConfigDict(extra='ignore')
     # Exif properties
-    ExifOffset: PositiveInt = None
+    ResolutionUnit: int = None
+    ExifOffset: int = None
     ImageDescription: str = None
     Make: str = None
     Model: str = None
     Software: str = None
+    Orientation: int = None
     DateTime: datetime | str = None
     DateTimeOriginal: datetime = None
     YResolution: float = None
@@ -264,6 +271,8 @@ class Xml:
     Artist: str = None
 
 
+@dataclass
+class Schemas:
     """
     Schemas structure.
 
@@ -281,13 +290,14 @@ class Xml:
 
     """
 
-    xmpRights: XmpRights = Field(default=XmpRights(**{}))
-    xmpMM: XmpMM = Field(default=XmpMM(**{}))
-    Iptc4xmpCore: Iptc4XmpCore = Field(default=Iptc4XmpCore(**{}))
-    Iptc4xmpExt: Iptc4XmpExt = Field(default=Iptc4XmpExt(**{}))
-    photoshop: Photoshop = Field(default=Photoshop(**{}))
-    dc: Dc = Field(default=Dc(**{}))
-    aux: Aux = Field(default=Aux(**{}))
-    tiff: Tiff = Field(default=Tiff(**{}))
-    exif: Exif = Field(default=Exif(**{}))
+    xmp: Xmp()
+    # xmpRights: XmpRights = field(default=XmpRights(**{}))
+    # xmpMM: XmpMM = field(default=XmpMM(**{}))
+    # Iptc4xmpCore: Iptc4XmpCore = field(default=Iptc4XmpCore(**{}))
+    Iptc4xmpExt: Iptc4XmpExt()
+    # photoshop: Photoshop = field(default=Photoshop(**{}))
+    # dc: Dc = field(default=Dc(**{}))
+    # aux: Aux = field(default=Aux(**{}))
+    # tiff: Tiff = field(default=Tiff(**{}))
+    # exif: Exif = field(default=Exif(**{}))
     
