@@ -167,6 +167,7 @@ class Dc(BaseModel):
     # DC properties
     format: str = None
     rights: str = None
+    creator: list[str] = None
     description: str = None
     subject: list[str] = None
 
