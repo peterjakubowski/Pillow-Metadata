@@ -6,7 +6,7 @@
 # into a standard Python dictionary from a Pillow (PIL) source image.
 #
 
-from pydantic import BaseModel, Field, ConfigDict, PositiveInt
+from dataclasses import dataclass, field, InitVar
 from datetime import datetime
 
 # ========================
@@ -14,7 +14,6 @@ from datetime import datetime
 # ========================
 
 
-class Xmp(BaseModel):
     """
      Properties in the XMP namespace.
 
@@ -37,21 +36,17 @@ class Xmp(BaseModel):
 
      """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # XMP properties
-    CreateDate: datetime = None
     CreatorTool: str = None
     Identifier: list[str] = None
     Label: str = None
     MetadataDate: datetime = None
     ModifyDate: datetime = None
     Nickname: str = None
-    Rating: int = Field(None, ge=-1, le=5)
     # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
 
-class XmpRights(BaseModel):
     """
     Properties in the XMP Rights Management namespace.
 
@@ -71,7 +66,6 @@ class XmpRights(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # XMPRights properties
     Certificate: str = None  # A Web URL for a rights management certificate
@@ -81,7 +75,6 @@ class XmpRights(BaseModel):
     WebStatement: str = None  # A Web URL for a statement of the ownership and usage rights for this resource.
 
 
-class XmpMM(BaseModel):
     """
 
     Attributes:
@@ -92,7 +85,6 @@ class XmpMM(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # XmpMM properties
     DocumentID: str = None
@@ -101,7 +93,6 @@ class XmpMM(BaseModel):
     History: list[dict] = None
 
 
-class Iptc4XmpCore(BaseModel):
     """
 
     Attributes:
@@ -110,14 +101,11 @@ class Iptc4XmpCore(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # Iptc4XmpCore properties
-    AltTextAccessibility: str = Field(default=None, title='Alt Text')
     Location: str = None
 
 
-class Iptc4XmpExt(BaseModel):
     """
 
     Attributes:
@@ -125,13 +113,10 @@ class Iptc4XmpExt(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # Iptc4XmpExt properties
-    PersonInImage: list[str] = None
 
 
-class Photoshop(BaseModel):
     """
 
     Attributes:
@@ -142,16 +127,13 @@ class Photoshop(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # Photoshop properties
     DateCreated: datetime = None
-    Urgency: PositiveInt = None
     City: str = None
     State: str = None
 
 
-class Dc(BaseModel):
     """
 
     Attributes:
@@ -162,7 +144,6 @@ class Dc(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # DC properties
     format: str = None
@@ -172,7 +153,6 @@ class Dc(BaseModel):
     subject: list[str] = None
 
 
-class Aux(BaseModel):
     """
 
     Attributes:
@@ -185,7 +165,6 @@ class Aux(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # Aux properties
     SerialNumber: str = None
@@ -196,7 +175,6 @@ class Aux(BaseModel):
     FujiRatingAlreadyApplied: bool = None
 
 
-class Tiff(BaseModel):
     """
 
     Attributes:
@@ -205,14 +183,12 @@ class Tiff(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # Tiff properties
     Make: str = None
     Model: str = None
 
 
-class Exif(BaseModel):
     """
 
     Attributes:
@@ -231,16 +207,13 @@ class Exif(BaseModel):
 
     """
 
-    # Configure the BaseModel to ignore any extra attributes given at creation
     model_config = ConfigDict(extra='ignore')
     # Exif properties
-    ResolutionUnit: PositiveInt = None
     ExifOffset: PositiveInt = None
     ImageDescription: str = None
     Make: str = None
     Model: str = None
     Software: str = None
-    Orientation: PositiveInt = None
     DateTime: datetime | str = None
     DateTimeOriginal: datetime = None
     YResolution: float = None
@@ -249,7 +222,6 @@ class Exif(BaseModel):
     Artist: str = None
 
 
-class Schemas(BaseModel):
     """
     Schemas structure.
 
@@ -267,7 +239,6 @@ class Schemas(BaseModel):
 
     """
 
-    xmp: Xmp = Field(default=Xmp(**{}))
     xmpRights: XmpRights = Field(default=XmpRights(**{}))
     xmpMM: XmpMM = Field(default=XmpMM(**{}))
     Iptc4xmpCore: Iptc4XmpCore = Field(default=Iptc4XmpCore(**{}))
