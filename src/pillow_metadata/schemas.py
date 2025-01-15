@@ -48,6 +48,14 @@ class XPath:
 # ========================
 
 
+@dataclass
+class Xml:
+    xmp_xml: InitVar[str]
+
+    def __post_init__(self, xmp_xml: str):
+        self.xmp_xml = xmp_xml
+
+
     """
      Properties in the XMP namespace.
 
