@@ -9,6 +9,40 @@
 from dataclasses import dataclass, field, InitVar
 from datetime import datetime
 
+
+# ========================
+# === Descriptor Class ===
+# ========================
+
+class XPath:
+    """
+
+    """
+
+    def __init__(self, tag: str, datatype: str):
+        self.tag = tag
+        self.datatype = datatype
+
+    def __get__(self, instance, owner=None):
+        value = None
+        if instance.xmp_xml is not None:
+            if self.datatype == 'text':
+                ele = instance.xmp_xml.find(f'.//{self.tag}')
+                # print(ele)
+                if ele is not None:
+                    value = ele.text
+            elif self.datatype == 'bag':
+                ele = instance.xmp_xml.find(f'.//{self.tag}')
+                if ele is not None:
+                    items = []
+                    bag = ele.getchildren()
+                    if len(bag) == 1:
+                        for li in bag[0].iterchildren():
+                            items.append(li.text)
+                        value = items
+
+        return value
+
 # ========================
 # ==== Schema Classes ====
 # ========================
