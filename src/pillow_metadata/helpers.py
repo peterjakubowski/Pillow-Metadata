@@ -53,7 +53,13 @@ def build_xmp_dictionary(_xmp_xml: etree._ElementTree) -> Dict:
         ele, parent = q.popleft()  # Get the current element and its parent dictionary
         name = etree.QName(ele.tag).localname  # Extract the element's name
         if name not in parent:
-            parent[name] = {}  # Create a new dictionary entry if the element name isn't already present
+            if ele.text and ele.text.strip():
+                print(ele.text)
+                parent[name] = ele.text
+                print(parent)
+                # raise Exception
+            else:
+                parent[name] = {}  # Create a new dictionary entry if the element name isn't already present
 
         # Handle attributes
         if ele.attrib:
@@ -65,6 +71,7 @@ def build_xmp_dictionary(_xmp_xml: etree._ElementTree) -> Dict:
                 if (prefix := prefix_map[tag.namespace] if tag.namespace in prefix_map else tag.namespace) \
                         not in parent[name]:
                     parent[name][prefix] = {}  # Create a dictionary for the prefix if it doesn't exist
+
                 if (tname := tag.localname) not in parent[name][prefix]:
                     parent[name][prefix][tname] = val  # Store the attribute value
 
