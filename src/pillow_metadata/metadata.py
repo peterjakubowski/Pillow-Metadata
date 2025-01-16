@@ -8,7 +8,6 @@
 
 from dataclasses import dataclass, InitVar, field
 from typing import AnyStr, Dict
-from pydantic import ValidationError
 from lxml import etree
 from collections import deque
 from PIL import Image
@@ -27,27 +26,27 @@ import helpers
 class Metadata:
     """
     Extracts and organizes metadata (XMP and EXIF) from a Pillow image
-    into a standardized Python dictionary. The provide image must have 'xmp' in its .info
+    into a standardized Python dataclass. The provided image must have 'xmp' in its .info
     dictionary and Exif data available via .getexif().
 
     Args:
         pil_image (PIL.Image.Image): A Pillow image object containing metadata.
 
     Attributes:
-        metadata_dict:
+        # metadata_dict:
         filename:
-        xmp_xml:
-        exif:
+        # xmp_xml:
+        # exif:
         metadata:
 
     """
 
     pil_image: InitVar[Image.Image]
-    metadata_dict: Dict = field(default_factory=dict, init=False)  # Initialize an empty dictionary to store metadata
+    # metadata_dict: Dict = field(default_factory=dict, init=False)  # Initialize an empty dictionary to store metadata
     filename: AnyStr = field(default_factory=str, init=False)  # Store the filename for later use
     xmp_xml: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
-    exif: Image.Exif = field(default_factory=dict, init=False)  # Keep the raw EXIF data from the image
-    metadata: schemas.Schemas = field(default_factory=schemas.Schemas, init=False)
+    # exif: Image.Exif = field(default_factory=dict, init=False)  # Keep the raw EXIF data from the image
+    metadata: schemas.Schemas = None  # = schemas.Schemas(xml_tree=etree.ElementTree(etree.fromstring("<ele>None</ele>")))
 
     def __post_init__(self, pil_image: Image.Image) -> None:
         """
@@ -62,76 +61,18 @@ class Metadata:
         if hasattr(pil_image, 'filename'):
             self.filename = pil_image.filename
 
-        if 'xmp' in pil_image.info:
-            self.xmp_xml = helpers.parse_xml(_xmp_xml=pil_image.info['xmp'])
-            if 'xmpmeta' in (xmp_dict := helpers.build_xmp_dictionary(_xmp_xml=self.xmp_xml)):
-                self.metadata_dict['xmpmeta'] = xmp_dict['xmpmeta']
-
-        if exif := pil_image.getexif():
-            self.exif = exif
-            if exif_dict := helpers.build_exif_dictionary(_exif=self.exif):
-                self.metadata_dict['exif'] = exif_dict  # Create an 'exif' entry in the main metadata dictionary
-
-        if self.metadata_dict:
-            if xmp_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='xmp'):
-                try:
-                    self.metadata.xmp = schemas.Xmp(**xmp_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if xmpRights_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='xmpRights'):
-                try:
-                    self.metadata.xmpRights = schemas.XmpRights(**xmpRights_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if iptc4XmpCore_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='Iptc4xmpCore'):
-                try:
-                    self.metadata.Iptc4xmpCore = schemas.Iptc4XmpCore(**iptc4XmpCore_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if iptc4XmpExt_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='Iptc4xmpExt'):
-                try:
-                    self.metadata.Iptc4xmpExt = schemas.Iptc4XmpExt(**iptc4XmpExt_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if xmpMM_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='xmpMM'):
-                try:
-                    self.metadata.xmpMM = schemas.XmpMM(**xmpMM_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if photoshop_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='photoshop'):
-                try:
-                    self.metadata.photoshop = schemas.Photoshop(**photoshop_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if dc_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='dc'):
-                try:
-                    self.metadata.dc = schemas.Dc(**dc_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if aux_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='aux'):
-                try:
-                    self.metadata.aux = schemas.Aux(**aux_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if tiff_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='tiff'):
-                try:
-                    self.metadata.tiff = schemas.Tiff(**tiff_schema)
-                except ValidationError as ve:
-                    print(ve.json())
-
-            if exif_schema := helpers.search_for_schema(_metadata=self.metadata_dict, schema='exif'):
-                try:
-                    self.metadata.exif = schemas.Exif(**exif_schema)
-                except ValidationError as ve:
-                    print(ve.json())
+        try:
+            self.xmp_xml = helpers.parse_xml(pil_image.info['xmp'])
+        except KeyError as ke:
+            print(f"Key Error: {ke}")
+        except TypeError as te:
+            print(f"Type Error: {te}")
+        except etree.XMLSyntaxError as xse:
+            print(f"XML Syntax Error: {xse}")
+        except etree.ParseError as pe:
+            print(f"Parse Error: {pe}")
+        finally:
+            self.metadata = schemas.Schemas(xml_tree=self.xmp_xml)
 
     def search_metadata(self, prefix: str, localname: str) -> str | None:
         """
