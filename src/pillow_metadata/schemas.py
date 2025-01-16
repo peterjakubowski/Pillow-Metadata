@@ -8,11 +8,27 @@
 
 from dataclasses import dataclass, field, InitVar
 from datetime import datetime
+from lxml import etree
 
+# =======================
+# ==== Namespace Map ====
+# =======================
+
+
+NS_MAP = {
+    'rdf': '{http://www.w3.org/1999/02/22-rdf-syntax-ns#}',
+    'xmp': '{http://ns.adobe.com/xap/1.0/}',
+    'xmpRights': '{http://ns.adobe.com/xap/1.0/rights/}',
+    'Iptc4xmpCore': '{http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/}',
+    'Iptc4xmpExt': '{http://iptc.org/std/Iptc4xmpExt/2008-02-29/}',
+    'photoshop': '{http://ns.adobe.com/photoshop/1.0/}',
+    'dc': '{http://purl.org/dc/elements/1.1/}}'
+}
 
 # ========================
 # === Descriptor Class ===
 # ========================
+
 
 class XPath:
     """
@@ -23,16 +39,30 @@ class XPath:
         self.tag = tag
         self.datatype = datatype
 
-    def __get__(self, instance, owner=None):
+    def __set_name__(self, owner: object, name: str):
+        self.attrib_name = name
+        self.annotation = owner.__annotations__.get(name)
+
+    def __get__(self, instance: object, owner=None) -> str | list[str] | None:
+        value = self.lookup(instance._xml_tree)
+        instance.__dict__[self.attrib_name] = value
+        return value
+
+    def lookup(self, xml: etree._ElementTree) -> str | list[str] | None:
         value = None
-        if instance.xmp_xml is not None:
+        if xml is not None and xml.getroot() is not None:
             if self.datatype == 'text':
-                ele = instance.xmp_xml.find(f'.//{self.tag}')
-                # print(ele)
+                ele = xml.find(f'.//{self.tag}')
                 if ele is not None:
                     value = ele.text
+                else:
+                    ele = xml.find(f'.//{NS_MAP['rdf']}Description')
+                    if ele is not None and ele.attrib:
+                        if self.tag in ele.attrib:
+                            value = ele.attrib[self.tag]
+
             elif self.datatype == 'bag':
-                ele = instance.xmp_xml.find(f'.//{self.tag}')
+                ele = xml.find(f'.//{self.tag}')
                 if ele is not None:
                     items = []
                     bag = ele.getchildren()
@@ -50,10 +80,20 @@ class XPath:
 
 @dataclass
 class Xml:
-    xmp_xml: InitVar[str]
+    """
+    The XML tree representing the XMP metadata.
 
-    def __post_init__(self, xmp_xml: str):
-        self.xmp_xml = xmp_xml
+     Attributes:
+         _xml_tree: XML ElementTree, parsed by lxml
+
+    """
+
+    _xml_tree: etree._ElementTree
+
+    def __post_init__(self):
+
+        if not isinstance(self._xml_tree, etree._ElementTree):
+            raise TypeError(f'xml_tree expected type ElementTree, got {type(self._xml_tree)} instead.')
 
 
 class Xmp(Xml):
@@ -80,14 +120,14 @@ class Xmp(Xml):
      """
 
     # XMP properties
-    CreateDate: datetime = XPath(tag='{http://ns.adobe.com/xap/1.0/}CreateDate', datatype='text')
-    CreatorTool: str = XPath(tag='{http://ns.adobe.com/xap/1.0/}CreatorTool', datatype='text')
+    CreateDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'CreateDate'}", datatype='text')
+    CreatorTool: str = XPath(tag=f"{NS_MAP['xmp']}{'CreatorTool'}", datatype='text')
     Identifier: list[str] = None
-    Label: str = None
-    MetadataDate: datetime = None
-    ModifyDate: datetime = None
-    Nickname: str = None
-    Rating: int = None
+    Label: str = XPath(tag=f"{NS_MAP['xmp']}{'Label'}", datatype='text')
+    MetadataDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'MetadataDate'}", datatype='text')
+    ModifyDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'ModifyDate'}", datatype='text')
+    Nickname: str = XPath(tag=f"{NS_MAP['xmp']}{'Nickname'}", datatype='text')
+    Rating: int = XPath(tag=f"{NS_MAP['xmp']}{'Rating'}", datatype='text')
     # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
 
@@ -96,7 +136,7 @@ class XmpRights(Xml):
     Properties in the XMP Rights Management namespace.
 
     The XMP Rights Management namespace contains properties that provide
-    information regarding the legal restriction sassociated with a resource.
+    information regarding the legal restrictions associated with a resource.
 
     The namespace URI shall be "http://ns.adobe.com/xap/1.0/rights/".
 
@@ -139,6 +179,13 @@ class XmpMM(Xml):
 
 class Iptc4XmpCore(Xml):
     """
+    Properties in the IPTC Core namespace.
+
+    IPTC Photo Metadata provides data about photographs and the values can be processed by software.
+
+    The namespace URI is http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/
+
+    The preferred namespace prefix is Iptc4xmpCore
 
     Attributes:
         AltTextAccessibility:
@@ -160,29 +207,48 @@ class Iptc4XmpExt(Xml):
     """
 
     # Iptc4XmpExt properties
-    PersonInImage: list[str] = XPath(tag='{http://iptc.org/std/Iptc4xmpExt/2008-02-29/}PersonInImage', datatype='bag')
+    PersonInImage: list[str] = XPath(tag=f"{NS_MAP['Iptc4xmpExt']}{'PersonInImage'}", datatype='bag')
 
 
 class Photoshop(Xml):
     """
+    Properties in the Photoshop namespace.
+
+    This namespace specifies properties used by Adobe Photoshop.
+
+    The namespace URI is "http://ns.adobe.com/photoshop/1.0/"
+
+    The preferred namespace prefix is photoshop
 
     Attributes:
-        DateCreated:
-        Urgency:
-        City:
-        State:
+        DateCreated: The date the intellectual content of the document was created.
+        Urgency: Urgency. Valid range is 1-8.
+        City: City.
+        State: Province/state.
+        TransmissionReference: Original transmission reference.
 
     """
 
     # Photoshop properties
-    DateCreated: datetime = None
-    Urgency: int = None
-    City: str = None
-    State: str = None
+    DateCreated: datetime = XPath(tag=f"{NS_MAP['photoshop']}{'DateCreated'}", datatype='text')
+    Urgency: int = XPath(tag=f"{NS_MAP['photoshop']}{'Urgency'}", datatype='text')
+    City: str = XPath(tag=f"{NS_MAP['photoshop']}{'City'}", datatype='text')
+    State: str = XPath(tag=f"{NS_MAP['photoshop']}{'State'}", datatype='text')
+    TransmissionReference: str = XPath(tag=f"{NS_MAP['photoshop']}{'TransmissionReference'}", datatype='text')
 
 
 class Dc(Xml):
     """
+    Properties in the Dublin Core namespace.
+
+    The Dublin Core namespace provides a set of commonly used properties.
+
+    The names and usage shall be as defined in the Dublin Core Metadata Element Set,
+    created by the Dublin Core Metadata Initiative (DCMI).
+
+    The namespace URI is "http://purl.org/dc/elements/1.1/"
+
+    The preferred namespace prefix is dc
 
     Attributes:
         format:
@@ -193,11 +259,12 @@ class Dc(Xml):
     """
 
     # DC properties
+    creator: list[str] = XPath(tag=f"{NS_MAP['dc']}{'creator'}", datatype='bag')
+    description: str = None
     format: str = None
     rights: str = None
-    creator: list[str] = None
-    description: str = None
-    subject: list[str] = None
+    subject: list[str] = XPath(tag=f"{NS_MAP['dc']}{'subject'}", datatype='bag')
+    title: str = None
 
 
 class Aux(Xml):
@@ -274,30 +341,42 @@ class Exif(Xml):
 @dataclass
 class Schemas:
     """
-    Schemas structure.
+    XMP namespace definitions
+
+    The XMP namespaces define a set of properties.
+
+    In any given XMP Packet, a property may be absent or present.
+
+    For any given XMP, there is no requirement that all properties from a given namespace must be present.
 
     Attributes:
         xmp:
-        xmpRights:
-        xmpMM:
-        Iptc4xmpCore:
+        # xmpRights:
+        # xmpMM:
+        # Iptc4xmpCore:
         Iptc4xmpExt:
-        photoshop:
+        # photoshop:
         dc:
-        aux:
-        tiff:
-        exif:
+        # aux:
+        # tiff:
+        # exif:
 
     """
-
-    xmp: Xmp()
+    xml_tree: InitVar[etree._ElementTree]
+    xmp: Xmp = field(default=Xmp)
     # xmpRights: XmpRights = field(default=XmpRights(**{}))
     # xmpMM: XmpMM = field(default=XmpMM(**{}))
-    # Iptc4xmpCore: Iptc4XmpCore = field(default=Iptc4XmpCore(**{}))
-    Iptc4xmpExt: Iptc4XmpExt()
-    # photoshop: Photoshop = field(default=Photoshop(**{}))
-    # dc: Dc = field(default=Dc(**{}))
+    Iptc4xmpCore: Iptc4XmpCore = field(default=Iptc4XmpCore)
+    Iptc4xmpExt: Iptc4XmpExt = field(default=Iptc4XmpExt)
+    photoshop: Photoshop = field(default=Photoshop)
+    dc: Dc = field(default=Dc)
     # aux: Aux = field(default=Aux(**{}))
     # tiff: Tiff = field(default=Tiff(**{}))
     # exif: Exif = field(default=Exif(**{}))
-    
+
+    def __post_init__(self, xml_tree: etree._ElementTree):
+        self.xmp = Xmp(_xml_tree=xml_tree)
+        self.Iptc4xmpCore = Iptc4XmpCore(_xml_tree=xml_tree)
+        self.Iptc4xmpExt = Iptc4XmpExt(_xml_tree=xml_tree)
+        self.photoshop = Photoshop(_xml_tree=xml_tree)
+        self.dc = Dc(_xml_tree=xml_tree)
