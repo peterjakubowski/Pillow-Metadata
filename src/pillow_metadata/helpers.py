@@ -6,9 +6,11 @@
 # into a standard Python dictionary from a Pillow (PIL) source image.
 #
 
-from typing import ByteString, Dict
+import datetime
+import dateutil.parser
+from typing import ByteString, AnyStr
+from dateutil.parser import ParserError
 from lxml import etree
-from collections import deque
 from PIL import Image
 
 # ========================
@@ -33,104 +35,57 @@ def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
     return _xmp_xml
 
 
-def build_xmp_dictionary(_xmp_xml: etree._ElementTree) -> Dict:
-    """
-    Traverses the XMP XML and populates the metadata dictionary.
-    Handles nested elements and different XML structures.
-    The algorithm uses a queue to manage tree traversal.
-
-    :param _xmp_xml: XML (packet) tree containing image XMP metadata
-    :return: Dictionary of XMP metadata
+def cast_datatype(_value: AnyStr, _data_type: AnyStr) -> AnyStr:
     """
 
-    if not isinstance(_xmp_xml, etree._ElementTree):
-        raise TypeError('Type Error: Invalid XMP given, unable to parse XML tree.')
+    :return:
+    """
 
-    xmp_metadata = {}
+    if _data_type is datetime.datetime:
+        try:
+            _value = dateutil.parser.parse(_value)
+        except ParserError as pe:
+            print(f'Error parsing date string to datetime: {pe}')
+        except OverflowError as oe:
+            print(f'Overflow error when parsing date string to datetime: {oe}')
 
-    q = deque([(_xmp_xml.getroot(), xmp_metadata)])  # Start with the root element and the main metadata dict
-    while q:
-        ele, parent = q.popleft()  # Get the current element and its parent dictionary
-        name = etree.QName(ele.tag).localname  # Extract the element's name
-        if name not in parent:
-            if ele.text and ele.text.strip():
-                print(ele.text)
-                parent[name] = ele.text
-                print(parent)
-                # raise Exception
-            else:
-                parent[name] = {}  # Create a new dictionary entry if the element name isn't already present
+    elif _data_type is int:
+        try:
+            _value = int(_value)
+        except Exception as exc:
+            print(f'Error converting value to integer: {exc}')
 
-        # Handle attributes
-        if ele.attrib:
-            prefix_map = {}
-            for _key, _val in ele.nsmap.items():
-                prefix_map[_val] = _key  # Create a map to resolve prefixes
-            for key, val in ele.attrib.items():
-                tag = etree.QName(key)
-                if (prefix := prefix_map[tag.namespace] if tag.namespace in prefix_map else tag.namespace) \
-                        not in parent[name]:
-                    parent[name][prefix] = {}  # Create a dictionary for the prefix if it doesn't exist
+    elif _data_type is float:
+        try:
+            _value = float(_value)
+        except Exception as exc:
+            print(f'Error converting value to float: {exc}')
 
-                if (tname := tag.localname) not in parent[name][prefix]:
-                    parent[name][prefix][tname] = val  # Store the attribute value
+    assert type(_value) is _data_type
 
-        # Handle child elements
-        for child in ele:
-            # Special handling for Bag, Seq, and Alt elements
-            if (cname := etree.QName(child.tag).localname) in ('Bag', 'Seq', 'Alt'):
-                del parent[name]  # Remove the element if it is Bag, Seq, or Alt
-                if ele.prefix not in parent:
-                    parent[ele.prefix] = {}  # Create an entry for the prefix
-                parent[ele.prefix][name] = []  # Create a list to store the children of Bag, Seq, or Alt
-                for li in child:
-                    # Special handling for Alt elements to get default value
-                    if cname == 'Alt':
-                        for key, val in li.attrib.items():
-                            if val == 'x-default':
-                                parent[ele.prefix][name] = li.text
-                    else:
-                        # Append the children's attributes or text
-                        parent[ele.prefix][name].append(li.attrib if li.attrib else li.text)
-            else:
-                q.append((child, parent[name]))  # Add the child element to the queue for processing
-
-    return xmp_metadata
+    return _value
 
 
-def build_exif_dictionary(_exif: Image.Exif) -> Dict:
+def build_exif_dictionary(_exif: Image.Exif, _exif_object: object) -> object:
     """
     Reads EXIF data and creates a metadata dictionary with human-readable tag names.
 
     :param _exif: Image Exif data
-    :return: Dictionary containing Image Exif data
+    :param _exif_object: Exif schema object
+    :return: Exif schema object containing Image Exif data
     """
-
-    exif_metadata = {}
 
     for tag, value in _exif.items():
-        exif_metadata[Image.ExifTags.TAGS[tag]] = value  # Use ExifTags to get human-readable tag names
+        exif_tag = Image.ExifTags.TAGS[tag]
+        if hasattr(_exif_object, exif_tag):
+            if not isinstance(value, data_type := _exif_object.__annotations__[exif_tag]):
+                try:
+                    value = cast_datatype(_value=value, _data_type=data_type)
+                except TypeError as te:
+                    print(f'Type Error: {te}')
+                except AssertionError as ae:
+                    print(f'Assertion Error: {ae}')
 
-    return exif_metadata
+            _exif_object.__setattr__(exif_tag, value)
 
-
-def search_for_schema(_metadata: Dict, schema: str) -> Dict | None:
-    """
-    Search for the schema in the metadata dictionary:
-
-    :param _metadata: dictionary.
-    :param schema:
-    :return: dictionary.
-    """
-
-    q = deque([_metadata])
-    while q:
-        cur = q.popleft()
-        if isinstance(cur, dict):
-            if schema in cur and isinstance(cur[schema], dict):
-                return cur[schema]
-            for key in cur.keys():
-                if isinstance(cur[key], dict):
-                    q.append(cur[key])
-
-    return None
+    return _exif_object
