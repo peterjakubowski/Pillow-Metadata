@@ -2,8 +2,8 @@
 #
 # Author: Peter Jakubowski
 # Date: 12/8/2024
-# Description: Python class that transforms XMP and Exif metadata
-# into a standard Python dictionary from a Pillow (PIL) source image.
+# Description: Python class that transforms XMP and Exif metadata into a
+# standardized Python dataclass data structure from a Pillow (PIL) source image.
 #
 
 from dataclasses import dataclass, field, InitVar
@@ -174,6 +174,7 @@ class XmpRights(Xml):
     Owner: list = XPath(tag=f"{NS_MAP['xmpRights']}{'Owner'}", xmp_data_type='bag')
     UsageTerms: str = XPath(tag=f"{NS_MAP['xmpRights']}{'UsageTerms'}", xmp_data_type='text')
     WebStatement: str = XPath(tag=f"{NS_MAP['xmpRights']}{'WebStatement'}", xmp_data_type='text')
+
 
 class XmpMM(Xml):
     """
