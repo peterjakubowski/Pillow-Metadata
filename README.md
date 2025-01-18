@@ -1,10 +1,11 @@
 # Pillow-Metadata
 
-Python class that transforms XMP and Exif metadata into a standard Python dictionary from a Pillow (PIL) source image.
+Python class that transforms XMP and Exif metadata into a standardized Python dataclass data structure from a Pillow (PIL) source image.
+#
 
 ## Background
 
-I created this Python class to more easily extract image metadata in Python without depending on other packages like python-xmp-toolkit, which requires Exempi. Especially for simple read tasks, I wanted a tool that utilized Pillow, the Python Imaging Library. Pillow has methods to read metadata from images, this class will simply take the data returned by these methods and reformat it into a dictionary that is easier to work with.
+I created this Python class to more easily extract image metadata in Python without depending on other packages like python-xmp-toolkit, which requires Exempi; and PyExif, which requires exiftool. Especially for simple read tasks, I wanted a tool that utilized Pillow, the Python Imaging Library. Pillow has methods to read metadata from images, this class will simply take the data returned by these methods and reformat it into a dataclass that is easier to work with.
 
 The two Pillow methods used for metadata extraction are:
 
@@ -14,7 +15,7 @@ The two Pillow methods used for metadata extraction are:
 
 There is also a separate Pillow method, .getxmp(), that returns a dictionary containing the XMP tags. This method requires defusedxml to be installed, and I am not fond of the resulting structure.
 
-This class parses the XMP XML and creates a dictionary where the parent keys are the XMP prefix and child keys are the XMP local name. This class also takes the Exif dictionary and replaces the numeric keys with Exif tag names. The resulting dictionary contains the combined XMP and Exif metadata.
+This class parses the XMP XML and creates a dataclass data structure where the class names are the XMP prefix and attributes are the XMP local name. This class also takes the Exif dictionary and replaces the numeric keys with Exif tag names. The resulting dictionary contains the combined XMP and Exif metadata.
 
 ## Usage
 
