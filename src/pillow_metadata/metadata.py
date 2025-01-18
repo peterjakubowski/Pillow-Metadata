@@ -32,10 +32,8 @@ class Metadata:
         pil_image (PIL.Image.Image): A Pillow image object containing metadata.
 
     Attributes:
-        # metadata_dict:
         filename:
-        # xmp_xml:
-        # exif:
+        xmp_xml:
         metadata:
 
     """
@@ -43,7 +41,6 @@ class Metadata:
     pil_image: InitVar[Image.Image]
     filename: AnyStr = field(default_factory=str, init=False)  # Store the filename for later use
     xmp_xml: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
-    # exif: Image.Exif = field(default_factory=dict, init=False)  # Keep the raw EXIF data from the image
     metadata: schemas.Schemas = None
 
     def __post_init__(self, pil_image: Image.Image) -> None:
@@ -88,11 +85,9 @@ class Metadata:
         while not date_string and search:
             prefix, localname = search.popleft()
             if capture_date := self.metadata.__getattribute__(prefix).__getattribute__(localname):
-                print(prefix, localname)
                 return capture_date.strftime('%A, %B %d, %Y')
 
         if creation_date := Path(self.filename):  # Fallback to file creation time
-            print(creation_date.stat())
             date = datetime.fromtimestamp(creation_date.stat().st_birthtime)
             return date.strftime('%A, %B %d, %Y')
 
