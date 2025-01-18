@@ -2,8 +2,8 @@
 #
 # Author: Peter Jakubowski
 # Date: 12/8/2024
-# Description: Python class that transforms XMP and Exif metadata
-# into a standard Python dictionary from a Pillow (PIL) source image.
+# Description: Python class that transforms XMP and Exif metadata into a
+# standardized Python dataclass data structure from a Pillow (PIL) source image.
 #
 
 from datetime import datetime
