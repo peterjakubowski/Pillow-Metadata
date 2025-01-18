@@ -9,6 +9,7 @@
 from dataclasses import dataclass, field, InitVar
 from datetime import datetime
 from lxml import etree
+from typing import Any, Literal
 from helpers import cast_datatype
 
 # =======================
@@ -20,10 +21,13 @@ NS_MAP = {
     'rdf': '{http://www.w3.org/1999/02/22-rdf-syntax-ns#}',
     'xmp': '{http://ns.adobe.com/xap/1.0/}',
     'xmpRights': '{http://ns.adobe.com/xap/1.0/rights/}',
+    'xmpMM': '{http://ns.adobe.com/xap/1.0/mm/}',
     'Iptc4xmpCore': '{http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/}',
     'Iptc4xmpExt': '{http://iptc.org/std/Iptc4xmpExt/2008-02-29/}',
     'photoshop': '{http://ns.adobe.com/photoshop/1.0/}',
-    'dc': '{http://purl.org/dc/elements/1.1/}'
+    'dc': '{http://purl.org/dc/elements/1.1/}',
+    'aux': '{http://ns.adobe.com/exif/1.0/aux/}',
+    'tiff': '{http://ns.adobe.com/tiff/1.0/}'
 }
 
 # ========================
@@ -36,7 +40,7 @@ class XPath:
 
     """
 
-    def __init__(self, tag: str, xmp_data_type: str):
+    def __init__(self, tag: str, xmp_data_type: Literal['text', 'bag', 'alt', 'seq']):
         self.tag = tag
         self.datatype = xmp_data_type
 
@@ -44,7 +48,7 @@ class XPath:
         self.attrib_name = name
         self.annotation = owner.__annotations__.get(name)
 
-    def __get__(self, instance: object, owner=None) -> str | int | float | list | datetime | None:
+    def __get__(self, instance: Any, owner=None) -> str | int | float | list | datetime | None:
         value = self.lookup(instance._xml_tree)
         instance.__dict__[self.attrib_name] = value
         return value
@@ -78,11 +82,11 @@ class XPath:
             except TypeError as te:
                 print(f'Type Error: {te}')
             except AssertionError as ae:
-                print(f'Assertion Error: {ae}')
+                print(f'Assertion Error: {ae} {value} {self.annotation}')
             else:
                 return value
 
-            return
+            return None
 
         return value
 
@@ -156,21 +160,20 @@ class XmpRights(Xml):
     The preferred namespace prefix is xmpRights.
 
     Attributes:
-        Certificate:
-        Marked:
-        Owner:
-        UsageTerms:
-        WebStatement:
+        Certificate: A Web URL for a rights management certificate
+        Marked: Rights-managed resource when true. Public-domain resource when false. State unknown if None
+        Owner: A list of legal owners of the resource
+        UsageTerms: Text instructions on how a resource can be legally used
+        WebStatement: A Web URL for a statement of the ownership and usage rights for this resource
 
     """
 
     # XMPRights properties
-    Certificate: str = None  # A Web URL for a rights management certificate
-    Marked: bool = None  # Rights-managed resource when true. Public-domain resource when false. State unknown if None
-    Owner: list = None  # A list of legal owners of the resource
-    UsageTerms: str = None  # Text instructions on how a resource can be legally used
-    WebStatement: str = None  # A Web URL for a statement of the ownership and usage rights for this resource.
-
+    Certificate: str = XPath(tag=f"{NS_MAP['xmpRights']}{'Certificate'}", xmp_data_type='text')
+    Marked: bool = XPath(tag=f"{NS_MAP['xmpRights']}{'Marked'}", xmp_data_type='text')
+    Owner: list = XPath(tag=f"{NS_MAP['xmpRights']}{'Owner'}", xmp_data_type='bag')
+    UsageTerms: str = XPath(tag=f"{NS_MAP['xmpRights']}{'UsageTerms'}", xmp_data_type='text')
+    WebStatement: str = XPath(tag=f"{NS_MAP['xmpRights']}{'WebStatement'}", xmp_data_type='text')
 
 class XmpMM(Xml):
     """
@@ -207,8 +210,8 @@ class Iptc4XmpCore(Xml):
     """
 
     # Iptc4XmpCore properties
-    AltTextAccessibility: str = None
-    Location: str = None
+    AltTextAccessibility: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'AltTextAccessibility'}", xmp_data_type='text')
+    Location: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'Location'}", xmp_data_type='text')
 
 
 class Iptc4XmpExt(Xml):
@@ -257,7 +260,7 @@ class Dc(Xml):
     The Dublin Core namespace provides a set of commonly used properties.
 
     The names and usage shall be as defined in the Dublin Core Metadata Element Set,
-    created by the Dublin Core Metadata Initiative (DCMI).
+    created by the Dublin Core Metadata Initiative.
 
     The namespace URI is "http://purl.org/dc/elements/1.1/"
 
@@ -274,10 +277,10 @@ class Dc(Xml):
     # DC properties
     creator: list = XPath(tag=f"{NS_MAP['dc']}{'creator'}", xmp_data_type='bag')
     description: str = None
-    format: str = None
+    format: str = XPath(tag=f"{NS_MAP['dc']}{'format'}", xmp_data_type='text')
     rights: str = None
     subject: list = XPath(tag=f"{NS_MAP['dc']}{'subject'}", xmp_data_type='bag')
-    title: str = None
+    title: str = XPath(tag=f"{NS_MAP['dc']}{'title'}", xmp_data_type='text')
 
 
 class Aux(Xml):
@@ -294,12 +297,12 @@ class Aux(Xml):
     """
 
     # Aux properties
-    SerialNumber: str = None
-    LensInfo: str = None
-    Lens: str = None
-    LensSerialNumber: str = None
-    FlashCompensation: str = None
-    FujiRatingAlreadyApplied: bool = None
+    SerialNumber: str = XPath(tag=f"{NS_MAP['aux']}{'SerialNumber'}", xmp_data_type='text')
+    LensInfo: str = XPath(tag=f"{NS_MAP['aux']}{'LensInfo'}", xmp_data_type='text')
+    Lens: str = XPath(tag=f"{NS_MAP['aux']}{'Lens'}", xmp_data_type='text')
+    LensSerialNumber: str = XPath(tag=f"{NS_MAP['aux']}{'LensSerialNumber'}", xmp_data_type='text')
+    FlashCompensation: str = XPath(tag=f"{NS_MAP['aux']}{'FlashCompensation'}", xmp_data_type='text')
+    FujiRatingAlreadyApplied: bool = XPath(tag=f"{NS_MAP['aux']}{'FujiRatingAlreadyApplied'}", xmp_data_type='text')
 
 
 class Tiff(Xml):
@@ -312,8 +315,8 @@ class Tiff(Xml):
     """
 
     # Tiff properties
-    Make: str = None
-    Model: str = None
+    Make: str = XPath(tag=f"{NS_MAP['tiff']}{'Make'}", xmp_data_type='text')
+    Model: str = XPath(tag=f"{NS_MAP['tiff']}{'Model'}", xmp_data_type='text')
 
 
 @dataclass
@@ -365,32 +368,36 @@ class Schemas:
 
     Attributes:
         xmp:
-        # xmpRights:
-        # xmpMM:
+        xmpRights:
+        xmpMM:
         Iptc4xmpCore:
         Iptc4xmpExt:
         photoshop:
         dc:
-        # aux:
-        # tiff:
-        # exif:
+        aux:
+        tiff:
+        exif:
 
     """
     xml_tree: InitVar[etree._ElementTree]
     xmp: Xmp = field(default=Xmp)
-    # xmpRights: XmpRights = field(default=XmpRights(**{}))
-    # xmpMM: XmpMM = field(default=XmpMM(**{}))
+    xmpRights: XmpRights = field(default=XmpRights)
+    xmpMM: XmpMM = field(default=XmpMM)
     Iptc4xmpCore: Iptc4XmpCore = field(default=Iptc4XmpCore)
     Iptc4xmpExt: Iptc4XmpExt = field(default=Iptc4XmpExt)
     photoshop: Photoshop = field(default=Photoshop)
     dc: Dc = field(default=Dc)
-    # aux: Aux = field(default=Aux(**{}))
-    # tiff: Tiff = field(default=Tiff(**{}))
+    aux: Aux = field(default=Aux)
+    tiff: Tiff = field(default=Tiff)
     exif: Exif = field(default_factory=Exif)
 
     def __post_init__(self, xml_tree: etree._ElementTree):
         self.xmp = Xmp(_xml_tree=xml_tree)
+        self.xmpRights = XmpRights(_xml_tree=xml_tree)
+        self.xmpMM = XmpMM(_xml_tree=xml_tree)
         self.Iptc4xmpCore = Iptc4XmpCore(_xml_tree=xml_tree)
         self.Iptc4xmpExt = Iptc4XmpExt(_xml_tree=xml_tree)
         self.photoshop = Photoshop(_xml_tree=xml_tree)
         self.dc = Dc(_xml_tree=xml_tree)
+        self.aux = Aux(_xml_tree=xml_tree)
+        self.tiff = Tiff(_xml_tree=xml_tree)
