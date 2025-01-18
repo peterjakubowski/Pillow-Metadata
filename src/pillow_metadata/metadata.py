@@ -79,10 +79,9 @@ class Metadata:
         :return: (str) The capture date in 'Weekday, Month DD, YYYY' format, or None if not found.
         """
 
-        date_string = ""
         # Prioritize XMP then EXIF
         search = deque([('xmp', 'CreateDate'), ('exif', 'DateTimeOriginal'), ('photoshop', 'DateCreated')])
-        while not date_string and search:
+        while search:
             prefix, localname = search.popleft()
             if capture_date := self.metadata.__getattribute__(prefix).__getattribute__(localname):
                 return capture_date.strftime('%A, %B %d, %Y')
