@@ -6,10 +6,10 @@
 # into a standard Python dictionary from a Pillow (PIL) source image.
 #
 
-import datetime
+from datetime import datetime
 import dateutil.parser
-from typing import ByteString, AnyStr
 from dateutil.parser import ParserError
+from typing import ByteString, AnyStr, Any
 from lxml import etree
 from PIL import Image
 
@@ -35,13 +35,13 @@ def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
     return _xmp_xml
 
 
-def cast_datatype(_value: AnyStr, _data_type: AnyStr) -> AnyStr:
+def cast_datatype(_value: Any, _data_type: Any) -> AnyStr | datetime | int | float | bool:
     """
 
     :return:
     """
 
-    if _data_type is datetime.datetime:
+    if _data_type is datetime:
         try:
             _value = dateutil.parser.parse(_value)
         except ParserError as pe:
@@ -51,7 +51,7 @@ def cast_datatype(_value: AnyStr, _data_type: AnyStr) -> AnyStr:
 
     elif _data_type is int:
         try:
-            _value = int(_value)
+            _value = int(float(_value))
         except Exception as exc:
             print(f'Error converting value to integer: {exc}')
 
@@ -61,12 +61,18 @@ def cast_datatype(_value: AnyStr, _data_type: AnyStr) -> AnyStr:
         except Exception as exc:
             print(f'Error converting value to float: {exc}')
 
+    elif _data_type is bool:
+        try:
+            _value = bool(_value)
+        except Exception as exc:
+            print(f'Error converting value to bool: {exc}')
+
     assert type(_value) is _data_type
 
     return _value
 
 
-def build_exif_dictionary(_exif: Image.Exif, _exif_object: object) -> object:
+def build_exif_dictionary(_exif: Image.Exif, _exif_object: object):
     """
     Reads EXIF data and creates a metadata dictionary with human-readable tag names.
 
