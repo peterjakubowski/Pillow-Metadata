@@ -9,6 +9,7 @@
 from dataclasses import dataclass, field, InitVar
 from datetime import datetime
 from lxml import etree
+from helpers import cast_datatype
 
 # =======================
 # ==== Namespace Map ====
@@ -22,7 +23,7 @@ NS_MAP = {
     'Iptc4xmpCore': '{http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/}',
     'Iptc4xmpExt': '{http://iptc.org/std/Iptc4xmpExt/2008-02-29/}',
     'photoshop': '{http://ns.adobe.com/photoshop/1.0/}',
-    'dc': '{http://purl.org/dc/elements/1.1/}}'
+    'dc': '{http://purl.org/dc/elements/1.1/}'
 }
 
 # ========================
@@ -35,20 +36,20 @@ class XPath:
 
     """
 
-    def __init__(self, tag: str, datatype: str):
+    def __init__(self, tag: str, xmp_data_type: str):
         self.tag = tag
-        self.datatype = datatype
+        self.datatype = xmp_data_type
 
     def __set_name__(self, owner: object, name: str):
         self.attrib_name = name
         self.annotation = owner.__annotations__.get(name)
 
-    def __get__(self, instance: object, owner=None) -> str | list[str] | None:
+    def __get__(self, instance: object, owner=None) -> str | int | float | list | datetime | None:
         value = self.lookup(instance._xml_tree)
         instance.__dict__[self.attrib_name] = value
         return value
 
-    def lookup(self, xml: etree._ElementTree) -> str | list[str] | None:
+    def lookup(self, xml: etree._ElementTree) -> str | int | float | list | datetime | None:
         value = None
         if xml is not None and xml.getroot() is not None:
             if self.datatype == 'text':
@@ -70,6 +71,18 @@ class XPath:
                         for li in bag[0].iterchildren():
                             items.append(li.text)
                         value = items
+
+        if value and not isinstance(value, self.annotation):
+            try:
+                value = cast_datatype(_value=value, _data_type=self.annotation)
+            except TypeError as te:
+                print(f'Type Error: {te}')
+            except AssertionError as ae:
+                print(f'Assertion Error: {ae}')
+            else:
+                return value
+
+            return
 
         return value
 
@@ -120,14 +133,14 @@ class Xmp(Xml):
      """
 
     # XMP properties
-    CreateDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'CreateDate'}", datatype='text')
-    CreatorTool: str = XPath(tag=f"{NS_MAP['xmp']}{'CreatorTool'}", datatype='text')
-    Identifier: list[str] = None
-    Label: str = XPath(tag=f"{NS_MAP['xmp']}{'Label'}", datatype='text')
-    MetadataDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'MetadataDate'}", datatype='text')
-    ModifyDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'ModifyDate'}", datatype='text')
-    Nickname: str = XPath(tag=f"{NS_MAP['xmp']}{'Nickname'}", datatype='text')
-    Rating: int = XPath(tag=f"{NS_MAP['xmp']}{'Rating'}", datatype='text')
+    CreateDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'CreateDate'}", xmp_data_type='text')
+    CreatorTool: str = XPath(tag=f"{NS_MAP['xmp']}{'CreatorTool'}", xmp_data_type='text')
+    Identifier: list = None
+    Label: str = XPath(tag=f"{NS_MAP['xmp']}{'Label'}", xmp_data_type='text')
+    MetadataDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'MetadataDate'}", xmp_data_type='text')
+    ModifyDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'ModifyDate'}", xmp_data_type='text')
+    Nickname: str = XPath(tag=f"{NS_MAP['xmp']}{'Nickname'}", xmp_data_type='text')
+    Rating: int = XPath(tag=f"{NS_MAP['xmp']}{'Rating'}", xmp_data_type='text')
     # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
 
@@ -174,7 +187,7 @@ class XmpMM(Xml):
     DocumentID: str = None
     OriginalDocumentID: str = None
     InstanceID: str = None
-    History: list[dict] = None
+    History: list = None
 
 
 class Iptc4XmpCore(Xml):
@@ -207,7 +220,7 @@ class Iptc4XmpExt(Xml):
     """
 
     # Iptc4XmpExt properties
-    PersonInImage: list[str] = XPath(tag=f"{NS_MAP['Iptc4xmpExt']}{'PersonInImage'}", datatype='bag')
+    PersonInImage: list = XPath(tag=f"{NS_MAP['Iptc4xmpExt']}{'PersonInImage'}", xmp_data_type='bag')
 
 
 class Photoshop(Xml):
@@ -230,11 +243,11 @@ class Photoshop(Xml):
     """
 
     # Photoshop properties
-    DateCreated: datetime = XPath(tag=f"{NS_MAP['photoshop']}{'DateCreated'}", datatype='text')
-    Urgency: int = XPath(tag=f"{NS_MAP['photoshop']}{'Urgency'}", datatype='text')
-    City: str = XPath(tag=f"{NS_MAP['photoshop']}{'City'}", datatype='text')
-    State: str = XPath(tag=f"{NS_MAP['photoshop']}{'State'}", datatype='text')
-    TransmissionReference: str = XPath(tag=f"{NS_MAP['photoshop']}{'TransmissionReference'}", datatype='text')
+    DateCreated: datetime = XPath(tag=f"{NS_MAP['photoshop']}{'DateCreated'}", xmp_data_type='text')
+    Urgency: int = XPath(tag=f"{NS_MAP['photoshop']}{'Urgency'}", xmp_data_type='text')
+    City: str = XPath(tag=f"{NS_MAP['photoshop']}{'City'}", xmp_data_type='text')
+    State: str = XPath(tag=f"{NS_MAP['photoshop']}{'State'}", xmp_data_type='text')
+    TransmissionReference: str = XPath(tag=f"{NS_MAP['photoshop']}{'TransmissionReference'}", xmp_data_type='text')
 
 
 class Dc(Xml):
@@ -259,11 +272,11 @@ class Dc(Xml):
     """
 
     # DC properties
-    creator: list[str] = XPath(tag=f"{NS_MAP['dc']}{'creator'}", datatype='bag')
+    creator: list = XPath(tag=f"{NS_MAP['dc']}{'creator'}", xmp_data_type='bag')
     description: str = None
     format: str = None
     rights: str = None
-    subject: list[str] = XPath(tag=f"{NS_MAP['dc']}{'subject'}", datatype='bag')
+    subject: list = XPath(tag=f"{NS_MAP['dc']}{'subject'}", xmp_data_type='bag')
     title: str = None
 
 
@@ -303,7 +316,8 @@ class Tiff(Xml):
     Model: str = None
 
 
-class Exif(Xml):
+@dataclass
+class Exif:
     """
 
     Attributes:
@@ -330,7 +344,7 @@ class Exif(Xml):
     Model: str = None
     Software: str = None
     Orientation: int = None
-    DateTime: datetime | str = None
+    DateTime: datetime = None
     DateTimeOriginal: datetime = None
     YResolution: float = None
     Copyright: str = None
@@ -353,9 +367,9 @@ class Schemas:
         xmp:
         # xmpRights:
         # xmpMM:
-        # Iptc4xmpCore:
+        Iptc4xmpCore:
         Iptc4xmpExt:
-        # photoshop:
+        photoshop:
         dc:
         # aux:
         # tiff:
@@ -372,7 +386,7 @@ class Schemas:
     dc: Dc = field(default=Dc)
     # aux: Aux = field(default=Aux(**{}))
     # tiff: Tiff = field(default=Tiff(**{}))
-    # exif: Exif = field(default=Exif(**{}))
+    exif: Exif = field(default_factory=Exif)
 
     def __post_init__(self, xml_tree: etree._ElementTree):
         self.xmp = Xmp(_xml_tree=xml_tree)
