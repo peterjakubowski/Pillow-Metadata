@@ -7,12 +7,11 @@
 #
 
 from dataclasses import dataclass, InitVar, field
-from typing import AnyStr, Dict
+from typing import AnyStr
 from lxml import etree
 from collections import deque
 from PIL import Image
 from datetime import datetime
-import dateutil.parser
 from pathlib import Path
 import schemas
 import helpers
@@ -42,11 +41,10 @@ class Metadata:
     """
 
     pil_image: InitVar[Image.Image]
-    # metadata_dict: Dict = field(default_factory=dict, init=False)  # Initialize an empty dictionary to store metadata
     filename: AnyStr = field(default_factory=str, init=False)  # Store the filename for later use
     xmp_xml: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
     # exif: Image.Exif = field(default_factory=dict, init=False)  # Keep the raw EXIF data from the image
-    metadata: schemas.Schemas = None  # = schemas.Schemas(xml_tree=etree.ElementTree(etree.fromstring("<ele>None</ele>")))
+    metadata: schemas.Schemas = None
 
     def __post_init__(self, pil_image: Image.Image) -> None:
         """
@@ -74,26 +72,8 @@ class Metadata:
         finally:
             self.metadata = schemas.Schemas(xml_tree=self.xmp_xml)
 
-    def search_metadata(self, prefix: str, localname: str) -> str | None:
-        """
-        Searches the metadata dictionary for a specific element using breadth-first search.
-
-        :param prefix: (str) The namespace prefix of the element.
-        :param localname: (str) The local name of the element.
-        :return:
-        """
-
-        q = deque([self.metadata_dict])
-        while q:
-            cur = q.popleft()
-            if isinstance(cur, dict):
-                if prefix in cur:
-                    if localname in cur[prefix]:
-                        return cur[prefix][localname]
-                for key in cur.keys():
-                    if isinstance(cur[key], dict):
-                        q.append(cur[key])
-        return None
+        if exif := pil_image.getexif():
+            self.metadata.exif = helpers.build_exif_dictionary(_exif=exif, _exif_object=schemas.Exif())
 
     def get_capture_date(self) -> str | None:
         """
@@ -104,15 +84,15 @@ class Metadata:
 
         date_string = ""
         # Prioritize XMP then EXIF
-        search = deque([('xmp', 'CreateDate'), ('exif', 'DateTime'), ('exif', 'DateTimeOriginal')])
+        search = deque([('xmp', 'CreateDate'), ('exif', 'DateTimeOriginal'), ('photoshop', 'DateCreated')])
         while not date_string and search:
             prefix, localname = search.popleft()
-            if capture_date := self.search_metadata(prefix=prefix, localname=localname):
-                date_string = capture_date
-        if date_string:
-            date = dateutil.parser.parse(date_string)
-            return date.strftime('%A, %B %d, %Y')
-        elif creation_date := Path(self.filename):  # Fallback to file creation time
+            if capture_date := self.metadata.__getattribute__(prefix).__getattribute__(localname):
+                print(prefix, localname)
+                return capture_date.strftime('%A, %B %d, %Y')
+
+        if creation_date := Path(self.filename):  # Fallback to file creation time
+            print(creation_date.stat())
             date = datetime.fromtimestamp(creation_date.stat().st_birthtime)
             return date.strftime('%A, %B %d, %Y')
 
@@ -130,15 +110,15 @@ class Metadata:
         if capture_date := self.get_capture_date():
             info.append("Date Created: " + capture_date)
         # Get the image description
-        if description := self.search_metadata(prefix='dc', localname='description'):
+        if description := self.metadata.dc.description:
             info.append("Description: " + description)
         # Get keywords
-        if keywords := self.search_metadata(prefix='dc', localname='subject'):
+        if keywords := self.metadata.dc.subject:
             info.append("Keywords: " + ", ".join(keywords))
         # Get location data
         location = []
         for prefix, localname in [('Iptc4xmpCore', 'Location'), ('photoshop', 'City'), ('photoshop', 'State')]:
-            if loc := self.search_metadata(prefix=prefix, localname=localname):
+            if loc := self.metadata.__getattribute__(prefix).__getattribute__(localname):
                 location.append(loc)
         if location:
             info.append("Location: " + ", ".join(location))
