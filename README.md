@@ -29,16 +29,20 @@ pil_img = Image.open(img_path)
 # construct a new Metadata object based on the PIL Image.
 meta = Metadata(pil_img)
 
-# retrieve a dictionary with the image's metadata
-meta_dict = meta.metadata
-
 # retrieve the image's filename (path)
 # same as pil_img.filename
 filename = meta.filename
 
-# search the image's metadata
-xmp_date = meta.search_metadata(prefix='xmp', localname='CreateDate')
-exif_date = meta.search_metadata(prefix='exif', localname='DateTime')
+# retrieve a list of keywords applied to the image
+keywords = meta.metadata.dc.subject
+
+# retrieve the image's create date
+xmp_date = meta.metadata.xmp.CreateDate
+photoshop_date = meta.metadata.photoshop.DateCreated
+exif_date = meta.metadata.exif.DateTimeOriginal
+
+# get the image's capture date
+capture_date = meta.get_capture_date()
 
 ```
 
