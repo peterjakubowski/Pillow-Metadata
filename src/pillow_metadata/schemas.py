@@ -178,20 +178,28 @@ class XmpRights(Xml):
 
 class XmpMM(Xml):
     """
+    Properties in the XMP Media Management namespace.
+
+    This namespace is primarily for use by digital asset management (DAM) systems.
+
+    The namespace URI is http://ns.adobe.com/xap/1.0/mm/
+
+    The preferred namespace prefix is xmpMM
 
     Attributes:
-        DocumentID:
-        OriginalDocumentID:
-        InstanceID:
-        History:
+        DocumentID: The common identifier for all versions and renditions of a resource.
+        OriginalDocumentID: The common identifier for the original resource from which the current resource is derived.
+        InstanceID: An identifier for a specific incarnation of a resource, updated each time a file is saved.
+        # History: An ordered array of high-level user actions that resulted in this resource.
 
     """
 
     # XmpMM properties
-    DocumentID: str = None
-    OriginalDocumentID: str = None
-    InstanceID: str = None
-    History: list = None
+    # ID type should be GUID
+    DocumentID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'DocumentID'}", xmp_data_type='text')
+    OriginalDocumentID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'OriginalDocumentID'}", xmp_data_type='text')
+    InstanceID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'InstanceID'}", xmp_data_type='text')
+    # History: list = XPath(tag=f"{NS_MAP['xmpMM']}{'History'}", xmp_data_type='bag')  # ordered array
 
 
 class Iptc4XmpCore(Xml):
@@ -205,21 +213,32 @@ class Iptc4XmpCore(Xml):
     The preferred namespace prefix is Iptc4xmpCore
 
     Attributes:
+        # CreatorContactInfo: Provides information to get in contact with the creator of this  object.
         AltTextAccessibility:
-        Location:
+        Location: Name of a location the content is focussing on -- either the location shown or referenced by text.
+        CountryCode: Code of the country the content is focussing on -- either the country shown or referenced in text.
 
     """
 
     # Iptc4XmpCore properties
-    AltTextAccessibility: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'AltTextAccessibility'}", xmp_data_type='text')
+    # CreatorContactInfo: object = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'CreatorContactInfo'}")
+    AltTextAccessibility: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'AltTextAccessibility'}", xmp_data_type='alt')
     Location: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'Location'}", xmp_data_type='text')
+    CountryCode: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'CountryCode'}", xmp_data_type='text')
 
 
 class Iptc4XmpExt(Xml):
     """
+    Properties in the IPTC Extension schema.
+
+    Defines the semantics of a set of metadata properties and their technical expressions by the XMP format.
+
+    The namespace URI is http://iptc.org/std/Iptc4xmpExt/2008-02-29/
+
+    The preferred namespace prefix is Iptc4xmpExt
 
     Attributes:
-        PersonInImage:
+        PersonInImage: Name of a person shown in the image.
 
     """
 
@@ -268,16 +287,17 @@ class Dc(Xml):
     The preferred namespace prefix is dc
 
     Attributes:
-        format:
-        rights:
-        description:
-        subject:
+        format: The file format, physical medium, or dimensions of the resource.
+        rights: Information about rights held in and over the resource.
+        description: An account of the resource.
+        subject: The topic of the resource represented using keywords.
+        title: A name given to the resource.
 
     """
 
     # DC properties
     creator: list = XPath(tag=f"{NS_MAP['dc']}{'creator'}", xmp_data_type='bag')
-    description: str = None
+    description: str = XPath(tag=f"{NS_MAP['dc']}{'description'}", xmp_data_type='alt')
     format: str = XPath(tag=f"{NS_MAP['dc']}{'format'}", xmp_data_type='text')
     rights: str = None
     subject: list = XPath(tag=f"{NS_MAP['dc']}{'subject'}", xmp_data_type='bag')
@@ -308,14 +328,23 @@ class Aux(Xml):
 
 class Tiff(Xml):
     """
+    Properties in the TIFF namespace.
+
+    EXIF properties for TIFF-derived data.
+
+    The namespace URI is http://ns.adobe.com/tiff/1.0/
+
+    The preferred namespace prefix is tiff
 
     Attributes:
-        Make:
-        Model:
+        # Artist: Camera owner, photographer or image creator.
+        Make: Manufacturer of recording equipment as an ASCII string.
+        Model: Model name or number of equipment as an ASCII string.
 
     """
 
     # Tiff properties
+    # Artist: str = XPath(tag=f"{NS_MAP['tiff']}{'Artist'}", xmp_data_type='text')
     Make: str = XPath(tag=f"{NS_MAP['tiff']}{'Make'}", xmp_data_type='text')
     Model: str = XPath(tag=f"{NS_MAP['tiff']}{'Model'}", xmp_data_type='text')
 
@@ -323,6 +352,13 @@ class Tiff(Xml):
 @dataclass
 class Exif:
     """
+    Properties in the EXIF namespace.
+
+    EXIF Schema For EXIF-Specific Properties. These properties defined solely by EXIF.
+
+    The namespace URI is http://ns.adobe.com/exif/1.0/
+
+    The preferred namespace prefix is exif
 
     Attributes:
         ResolutionUnit:
@@ -368,16 +404,16 @@ class Schemas:
     For any given XMP, there is no requirement that all properties from a given namespace must be present.
 
     Attributes:
-        xmp:
-        xmpRights:
-        xmpMM:
-        Iptc4xmpCore:
-        Iptc4xmpExt:
-        photoshop:
-        dc:
-        aux:
-        tiff:
-        exif:
+        xmp: Properties in the xmp namespace
+        xmpRights: Properties in the xmpRights namespace
+        xmpMM: Properties in the xmpMM namespace
+        Iptc4xmpCore: Properties in the Iptc4xmpCore namespace
+        Iptc4xmpExt: Properties in the Iptc4xmpExt namespace
+        photoshop: Properties in the photoshop namespace
+        dc: Properties in dc xmp namespace
+        aux: Properties in the aux namespace
+        tiff: Properties in the tiff namespace
+        exif: Properties in the exif namespace
 
     """
     xml_tree: InitVar[etree._ElementTree]
