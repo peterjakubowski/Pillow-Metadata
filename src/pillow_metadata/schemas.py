@@ -27,7 +27,8 @@ NS_MAP = {
     'photoshop': '{http://ns.adobe.com/photoshop/1.0/}',
     'dc': '{http://purl.org/dc/elements/1.1/}',
     'aux': '{http://ns.adobe.com/exif/1.0/aux/}',
-    'tiff': '{http://ns.adobe.com/tiff/1.0/}'
+    'tiff': '{http://ns.adobe.com/tiff/1.0/}',
+    'xml': '{http://www.w3.org/XML/1998/namespace}'
 }
 
 # ========================
@@ -56,25 +57,33 @@ class XPath:
     def lookup(self, xml: etree._ElementTree) -> str | int | float | list | datetime | None:
         value = None
         if xml is not None and xml.getroot() is not None:
+            ele = xml.find(f'.//{self.tag}')
             if self.datatype == 'text':
-                ele = xml.find(f'.//{self.tag}')
                 if ele is not None:
-                    value = ele.text
+                    value = ele.text.strip()
                 else:
                     ele = xml.find(f'.//{NS_MAP['rdf']}Description')
                     if ele is not None and ele.attrib:
                         if self.tag in ele.attrib:
-                            value = ele.attrib[self.tag]
+                            value = ele.attrib[self.tag].strip()
 
             elif self.datatype == 'bag':
-                ele = xml.find(f'.//{self.tag}')
                 if ele is not None:
                     items = []
                     bag = ele.getchildren()
                     if len(bag) == 1:
                         for li in bag[0].iterchildren():
-                            items.append(li.text)
+                            items.append(li.text.strip())
                         value = items
+
+            elif self.datatype == 'alt':
+                if ele is not None:
+                    alt = ele.getchildren()
+                    if len(alt) == 1:
+                        for li in alt[0].iterchildren():
+                            if NS_MAP['xml'] + 'lang' in li.attrib and li.attrib[NS_MAP['xml'] + 'lang'] == 'x-default':
+                                value = li.text.strip()
+                                break
 
         if value and not isinstance(value, self.annotation):
             try:
@@ -139,7 +148,7 @@ class Xmp(Xml):
     # XMP properties
     CreateDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'CreateDate'}", xmp_data_type='text')
     CreatorTool: str = XPath(tag=f"{NS_MAP['xmp']}{'CreatorTool'}", xmp_data_type='text')
-    Identifier: list = None
+    Identifier: list = XPath(tag=f"{NS_MAP['xmp']}{'Identifier'}", xmp_data_type='bag')
     Label: str = XPath(tag=f"{NS_MAP['xmp']}{'Label'}", xmp_data_type='text')
     MetadataDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'MetadataDate'}", xmp_data_type='text')
     ModifyDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'ModifyDate'}", xmp_data_type='text')
@@ -221,7 +230,7 @@ class Iptc4XmpCore(Xml):
     """
 
     # Iptc4XmpCore properties
-    # CreatorContactInfo: object = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'CreatorContactInfo'}")
+    # CreatorContactInfo: object = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'CreatorContactInfo'}", xmp_data_type='text')
     AltTextAccessibility: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'AltTextAccessibility'}", xmp_data_type='alt')
     Location: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'Location'}", xmp_data_type='text')
     CountryCode: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'CountryCode'}", xmp_data_type='text')
@@ -299,7 +308,7 @@ class Dc(Xml):
     creator: list = XPath(tag=f"{NS_MAP['dc']}{'creator'}", xmp_data_type='bag')
     description: str = XPath(tag=f"{NS_MAP['dc']}{'description'}", xmp_data_type='alt')
     format: str = XPath(tag=f"{NS_MAP['dc']}{'format'}", xmp_data_type='text')
-    rights: str = None
+    rights: str = XPath(tag=f"{NS_MAP['dc']}{'rights'}", xmp_data_type='alt')
     subject: list = XPath(tag=f"{NS_MAP['dc']}{'subject'}", xmp_data_type='bag')
     title: str = XPath(tag=f"{NS_MAP['dc']}{'title'}", xmp_data_type='text')
 
