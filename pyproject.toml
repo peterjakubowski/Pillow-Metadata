@@ -1,18 +1,17 @@
 [project]
 name = "Pillow-Metadata"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
-  { name="Peter Jakubowski"},
+  {name="Peter Jakubowski"},
 ]
-description = "Python class that transforms XMP and EXIF metadata into a standard Python dictionary from a Pillow (PIL) source image."
+description = "Python class that transforms XMP and Exif metadata into a standardized Python dataclass data structure from a Pillow (PIL) source image."
 readme = {file = "README.md", content-type = "text/markdown"}
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
 dependencies = [
     "lxml",
     "Pillow",
-    "python-dateutil",
-    "pydantic"
+    "python-dateutil"
 ]
 
 [project.urls]
