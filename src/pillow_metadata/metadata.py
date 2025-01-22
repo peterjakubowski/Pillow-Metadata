@@ -13,8 +13,8 @@ from collections import deque
 from PIL import Image
 from datetime import datetime
 from pathlib import Path
-import schemas
-import helpers
+import pillow_metadata.schemas as schemas
+import pillow_metadata.helpers as helpers
 
 # ========================
 # ==== Metadata Class ====
