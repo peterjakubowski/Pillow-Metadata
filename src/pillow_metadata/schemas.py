@@ -10,7 +10,7 @@ from dataclasses import dataclass, field, InitVar
 from datetime import datetime
 from lxml import etree
 from typing import Any, Literal
-from helpers import cast_datatype
+from pillow_metadata.helpers import cast_datatype
 
 # =======================
 # ==== Namespace Map ====
