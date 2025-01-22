@@ -1,10 +1,11 @@
 # Pillow-Metadata
 
-Python class that transforms XMP and Exif metadata into a standard Python dictionary from a Pillow (PIL) source image.
+Python class that transforms XMP and Exif metadata into a standardized Python dataclass data structure from a Pillow (PIL) source image.
+
 
 ## Background
 
-I created this Python class to more easily extract image metadata in Python without depending on other packages like python-xmp-toolkit, which requires Exempi. Especially for simple read tasks, I wanted a tool that utilized Pillow, the Python Imaging Library. Pillow has methods to read metadata from images, this class will simply take the data returned by these methods and reformat it into a dictionary that is easier to work with.
+I created this Python class to more easily extract image metadata in Python without depending on other packages like python-xmp-toolkit, which requires Exempi; and PyExif, which requires exiftool. Especially for simple read tasks, I wanted a tool that utilized Pillow, the Python Imaging Library. Pillow has methods to read metadata from images, this class will simply take the data returned by these methods and reformat it into a dataclass that is easier to work with.
 
 The two Pillow methods used for metadata extraction are:
 
@@ -14,12 +15,12 @@ The two Pillow methods used for metadata extraction are:
 
 There is also a separate Pillow method, .getxmp(), that returns a dictionary containing the XMP tags. This method requires defusedxml to be installed, and I am not fond of the resulting structure.
 
-This class parses the XMP XML and creates a dictionary where the parent keys are the XMP prefix and child keys are the XMP local name. This class also takes the Exif dictionary and replaces the numeric keys with Exif tag names. The resulting dictionary contains the combined XMP and Exif metadata.
+This class parses the XMP XML and creates a dataclass data structure where the class names are the XMP prefix and attributes are the XMP local name. This class also takes the Exif dictionary and replaces the numeric keys with Exif tag names. The resulting class contains the combined XMP and Exif metadata.
 
 ## Usage
 
 ```commandline
-from pillow_metadata.pillow_metadata import Metadata
+from pillow_metadata.metadata import Metadata
 from PIL import Image
 
 # open an image using Pillow
@@ -28,16 +29,20 @@ pil_img = Image.open(img_path)
 # construct a new Metadata object based on the PIL Image.
 meta = Metadata(pil_img)
 
-# retrieve a dictionary with the image's metadata
-meta_dict = meta.metadata
-
 # retrieve the image's filename (path)
 # same as pil_img.filename
 filename = meta.filename
 
-# search the image's metadata
-xmp_date = meta.search_metadata(prefix='xmp', localname='CreateDate')
-exif_date = meta.search_metadata(prefix='exif', localname='DateTime')
+# retrieve a list of keywords applied to the image
+keywords = meta.metadata.dc.subject
+
+# retrieve the image's create date
+xmp_date = meta.metadata.xmp.CreateDate
+photoshop_date = meta.metadata.photoshop.DateCreated
+exif_date = meta.metadata.exif.DateTimeOriginal
+
+# get the image's capture date
+capture_date = meta.get_capture_date()
 
 ```
 
@@ -61,3 +66,7 @@ lxml 5.3.0
 python-dateutil 2.9.0.post0
 
 ```
+
+## Additional Info
+
+[XMP namespace definitions](https://developer.adobe.com/xmp/docs/XMPNamespaces/)
