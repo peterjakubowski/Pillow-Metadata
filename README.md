@@ -1,7 +1,7 @@
 # Pillow-Metadata
 
 Python class that transforms XMP and Exif metadata into a standardized Python dataclass data structure from a Pillow (PIL) source image.
-#
+
 
 ## Background
 
@@ -15,7 +15,7 @@ The two Pillow methods used for metadata extraction are:
 
 There is also a separate Pillow method, .getxmp(), that returns a dictionary containing the XMP tags. This method requires defusedxml to be installed, and I am not fond of the resulting structure.
 
-This class parses the XMP XML and creates a dataclass data structure where the class names are the XMP prefix and attributes are the XMP local name. This class also takes the Exif dictionary and replaces the numeric keys with Exif tag names. The resulting dictionary contains the combined XMP and Exif metadata.
+This class parses the XMP XML and creates a dataclass data structure where the class names are the XMP prefix and attributes are the XMP local name. This class also takes the Exif dictionary and replaces the numeric keys with Exif tag names. The resulting class contains the combined XMP and Exif metadata.
 
 ## Usage
 
@@ -66,3 +66,7 @@ lxml 5.3.0
 python-dateutil 2.9.0.post0
 
 ```
+
+## Additional Info
+
+[XMP namespace definitions](https://developer.adobe.com/xmp/docs/XMPNamespaces/)
