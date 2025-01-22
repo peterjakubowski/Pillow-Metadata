@@ -39,7 +39,7 @@ NS_MAP = {
 class XPath:
     """
     Descriptor class that looks up a value for an attribute in the XML.
-    
+
     """
 
     def __init__(self, tag: str, xmp_data_type: Literal['text', 'bag', 'alt', 'seq']):
