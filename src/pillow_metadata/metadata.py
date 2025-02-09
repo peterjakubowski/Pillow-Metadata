@@ -72,7 +72,7 @@ class Metadata:
         if exif := pil_image.getexif():
             self.metadata.exif = helpers.build_exif_dictionary(_exif=exif, _exif_object=schemas.Exif())
 
-    def get_capture_date(self) -> str | None:
+    def get_capture_date(self) -> datetime | None:
         """
         Attempts to retrieve the capture date from XMP or EXIF data, falling back to file creation time.
 
@@ -84,13 +84,23 @@ class Metadata:
         while search:
             prefix, localname = search.popleft()
             if capture_date := self.metadata.__getattribute__(prefix).__getattribute__(localname):
-                return capture_date.strftime('%A, %B %d, %Y')
+                return capture_date
 
         if creation_date := Path(self.filename):  # Fallback to file creation time
             date = datetime.fromtimestamp(creation_date.stat().st_birthtime)
-            return date.strftime('%A, %B %d, %Y')
+            return date
 
         return None
+
+    def get_capture_date_string(self) -> str:
+        """
+        Formats the capture date as '%A, %B %d, %Y'
+
+        :return: (str) The capture date in 'Weekday, Month DD, YYYY' format, or None if not found.
+        """
+
+        if capture_date := self.get_capture_date():
+            return capture_date.strftime('%A, %B %d, %Y')
 
     def image_info(self) -> str:
         """
@@ -101,7 +111,7 @@ class Metadata:
 
         info = []
         # Get the capture date
-        if capture_date := self.get_capture_date():
+        if capture_date := self.get_capture_date_string():
             info.append("Date Created: " + capture_date)
         # Get the image description
         if description := self.metadata.dc.description:
