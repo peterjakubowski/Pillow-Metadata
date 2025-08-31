@@ -58,7 +58,11 @@ class XPath:
 
     def lookup(self, xml: etree._ElementTree) -> str | int | float | list | datetime | None:
         value = None
-        if xml is not None and xml.getroot() is not None:
+        if xml is None or xml.getroot() is None:
+            logging.warning("XML tree or root is None.")
+            return None
+
+        try:
             ele = xml.find(f'.//{self.tag}')
             if self.datatype == 'text':
                 if ele is not None:
@@ -77,6 +81,8 @@ class XPath:
                         for li in bag[0].iterchildren():
                             items.append(li.text.strip())
                         value = items
+                else:
+                    logging.debug(f"Bag with tag '{self.tag}' nof found.")
 
             elif self.datatype == 'alt':
                 if ele is not None:
@@ -86,6 +92,12 @@ class XPath:
                             if NS_MAP['xml'] + 'lang' in li.attrib and li.attrib[NS_MAP['xml'] + 'lang'] == 'x-default':
                                 value = li.text.strip()
                                 break
+                else:
+                    logging.debug(f"Alt with tag '{self.tag}' not found.")
+
+        except Exception as e:
+            logging.error(f"An unexpected error occurred during XML lookup for tag '{self.tag}': {e}")
+            return None
 
         if value and not isinstance(value, self.annotation):
             try:
