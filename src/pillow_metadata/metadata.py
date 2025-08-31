@@ -6,6 +6,7 @@
 # standardized Python dataclass data structure from a Pillow (PIL) source image.
 #
 
+import logging
 from dataclasses import dataclass, InitVar, field
 from typing import AnyStr
 from lxml import etree
@@ -59,13 +60,13 @@ class Metadata:
         try:
             self.xmp_xml = helpers.parse_xml(pil_image.info['xmp'])
         except KeyError as ke:
-            print(f"Key Error: {ke}")
+            logging.error(f"Key Error: {ke}")
         except TypeError as te:
-            print(f"Type Error: {te}")
+            logging.error(f"Type Error: {te}")
         except etree.XMLSyntaxError as xse:
-            print(f"XML Syntax Error: {xse}")
+            logging.error(f"XML Syntax Error: {xse}")
         except etree.ParseError as pe:
-            print(f"Parse Error: {pe}")
+            logging.error(f"Parse Error: {pe}")
         finally:
             self.metadata = schemas.Schemas(xml_tree=self.xmp_xml)
 

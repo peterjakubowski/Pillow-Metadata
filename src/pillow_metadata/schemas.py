@@ -6,6 +6,7 @@
 # standardized Python dataclass data structure from a Pillow (PIL) source image.
 #
 
+import logging
 from dataclasses import dataclass, field, InitVar
 from datetime import datetime
 from lxml import etree
@@ -90,9 +91,9 @@ class XPath:
             try:
                 value = cast_datatype(_value=value, _data_type=self.annotation)
             except TypeError as te:
-                print(f'Type Error: {te}')
+                logging.error(f'Type Error: {te}')
             except AssertionError as ae:
-                print(f'Assertion Error: {ae} {value} {self.annotation}')
+                logging.error(f'Assertion Error: {ae} {value} {self.annotation}')
             else:
                 return value
 

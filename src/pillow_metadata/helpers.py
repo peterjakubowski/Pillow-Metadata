@@ -6,6 +6,7 @@
 # standardized Python dataclass data structure from a Pillow (PIL) source image.
 #
 
+import logging
 from datetime import datetime
 import dateutil.parser
 from dateutil.parser import ParserError
@@ -30,7 +31,7 @@ def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
         _xmp_xml = etree.ElementTree(etree.fromstring(_xmp_xml.decode()))
 
     except etree.XMLSyntaxError as xse:
-        print(f'Type Error: {xse}')
+        logging.error(f'Type Error: {xse}')
 
     return _xmp_xml
 
@@ -45,27 +46,27 @@ def cast_datatype(_value: Any, _data_type: Any) -> AnyStr | datetime | int | flo
         try:
             _value = dateutil.parser.parse(_value)
         except ParserError as pe:
-            print(f'Error parsing date string to datetime: {pe}')
+            logging.error(f'Error parsing date string to datetime: {pe}')
         except OverflowError as oe:
-            print(f'Overflow error when parsing date string to datetime: {oe}')
+            logging.error(f'Overflow error when parsing date string to datetime: {oe}')
 
     elif _data_type is int:
         try:
             _value = int(float(_value))
         except Exception as exc:
-            print(f'Error converting value to integer: {exc}')
+            logging.error(f'Error converting value to integer: {exc}')
 
     elif _data_type is float:
         try:
             _value = float(_value)
         except Exception as exc:
-            print(f'Error converting value to float: {exc}')
+            logging.error(f'Error converting value to float: {exc}')
 
     elif _data_type is bool:
         try:
             _value = bool(_value)
         except Exception as exc:
-            print(f'Error converting value to bool: {exc}')
+            logging.error(f'Error converting value to bool: {exc}')
 
     assert type(_value) is _data_type
 
@@ -88,9 +89,9 @@ def build_exif_dictionary(_exif: Image.Exif, _exif_object: object):
                 try:
                     value = cast_datatype(_value=value, _data_type=data_type)
                 except TypeError as te:
-                    print(f'Type Error: {te}')
+                    logging.error(f'Type Error: {te}')
                 except AssertionError as ae:
-                    print(f'Assertion Error: {ae}')
+                    logging.error(f'Assertion Error: {ae}')
 
             _exif_object.__setattr__(exif_tag, value)
 
