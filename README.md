@@ -19,7 +19,7 @@ This class parses the XMP XML and creates a dataclass data structure where the c
 
 ## Usage
 
-```commandline
+```python
 from pillow_metadata.metadata import Metadata
 from PIL import Image
 
