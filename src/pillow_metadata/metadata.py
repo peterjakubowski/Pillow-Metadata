@@ -14,8 +14,8 @@ from collections import deque
 from PIL import Image
 from datetime import datetime
 from pathlib import Path
-import pillow_metadata.schemas as schemas
-import pillow_metadata.helpers as helpers
+from .schemas import Schemas, Exif
+from .helpers import parse_xml, build_exif_dictionary
 
 # ========================
 # ==== Metadata Class ====
@@ -42,7 +42,7 @@ class Metadata:
     pil_image: InitVar[Image.Image]
     filename: AnyStr = field(default_factory=str, init=False)  # Store the filename for later use
     xmp_xml: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
-    metadata: schemas.Schemas = None
+    metadata: Schemas = None
 
     def __post_init__(self, pil_image: Image.Image) -> None:
         """
@@ -58,7 +58,7 @@ class Metadata:
             self.filename = pil_image.filename
 
         try:
-            self.xmp_xml = helpers.parse_xml(pil_image.info['xmp'])
+            self.xmp_xml = parse_xml(pil_image.info['xmp'])
         except KeyError as ke:
             logging.error(f"Key Error: {ke}")
         except TypeError as te:
@@ -68,10 +68,10 @@ class Metadata:
         except etree.ParseError as pe:
             logging.error(f"Parse Error: {pe}")
         finally:
-            self.metadata = schemas.Schemas(xml_tree=self.xmp_xml)
+            self.metadata = Schemas(xml_tree=self.xmp_xml)
 
         if exif := pil_image.getexif():
-            self.metadata.exif = helpers.build_exif_dictionary(_exif=exif, _exif_object=schemas.Exif())
+            self.metadata.exif = build_exif_dictionary(_exif=exif, _exif_object=Exif())
 
     def get_capture_date(self) -> datetime | None:
         """
@@ -81,7 +81,7 @@ class Metadata:
         """
 
         # Prioritize XMP then EXIF
-        search = deque([('xmp', 'CreateDate'), ('exif', 'DateTimeOriginal'), ('photoshop', 'DateCreated')])
+        search = deque([('xmp', 'CreateDate'), ('exif', 'DateTime'), ('exif', 'DateTimeOriginal'), ('photoshop', 'DateCreated')])
         while search:
             prefix, localname = search.popleft()
             if capture_date := self.metadata.__getattribute__(prefix).__getattribute__(localname):
