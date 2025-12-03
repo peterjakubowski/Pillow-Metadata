@@ -44,7 +44,8 @@ def cast_datatype(_value: Any, _data_type: Any) -> AnyStr | datetime | int | flo
 
     if _data_type is datetime:
         try:
-            _value = dateutil.parser.parse(_value)
+            _value = str(_value).replace(":", "")
+            _value = dateutil.parser.parse(timestr=_value, default=None, fuzzy=True)
         except ParserError as pe:
             logging.error(f'Error parsing date string to datetime: {pe}')
         except OverflowError as oe:
