@@ -61,8 +61,8 @@ The following package versions were used when this was last updated, the use of 
 
 ```commandline
 Python 3.12.8
-Pillow 11.0.0
-lxml 5.3.0
+Pillow 12.2.0
+lxml 6.1.0
 python-dateutil 2.9.0.post0
 
 ```
