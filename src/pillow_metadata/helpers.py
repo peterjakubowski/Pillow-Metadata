@@ -84,7 +84,7 @@ def build_exif_dictionary(_exif: Image.Exif, _exif_object: object):
     """
 
     for tag, value in _exif.items():
-        exif_tag = Image.ExifTags.TAGS[tag]
+        exif_tag = Image.ExifTags.TAGS.get(tag, str(tag))
         if hasattr(_exif_object, exif_tag):
             if not isinstance(value, data_type := _exif_object.__annotations__[exif_tag]):
                 try:
