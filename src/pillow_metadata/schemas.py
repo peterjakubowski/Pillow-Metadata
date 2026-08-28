@@ -68,7 +68,7 @@ class XPath:
                 if ele is not None:
                     value = ele.text.strip()
                 else:
-                    ele = xml.find(f'.//{NS_MAP.get('rdf')}Description')
+                    ele = xml.find(f".//{NS_MAP.get('rdf')}Description")
                     if ele is not None and ele.attrib:
                         if self.tag in ele.attrib:
                             value = ele.attrib[self.tag].strip()
