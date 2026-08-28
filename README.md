@@ -1,3 +1,5 @@
+![Run Python Tests](https://github.com/peterjakubowski/Pillow-Metadata/actions/workflows/ci.yaml/badge.svg)
+
 # Pillow-Metadata
 
 Python class that transforms XMP and Exif metadata into a standardized Python dataclass data structure from a Pillow (PIL) source image.
