@@ -31,7 +31,8 @@ def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
         _xmp_xml = etree.ElementTree(etree.fromstring(_xmp_xml.decode()))
 
     except etree.XMLSyntaxError as xse:
-        logging.error(f'Type Error: {xse}')
+        logging.error(f'Syntax Error: {xse}')
+        raise TypeError("Syntax Error")
 
     return _xmp_xml
 
@@ -48,28 +49,41 @@ def cast_datatype(_value: Any, _data_type: Any) -> AnyStr | datetime | int | flo
             _value = dateutil.parser.parse(timestr=_value, default=None, fuzzy=True)
         except ParserError as pe:
             logging.error(f'Error parsing date string to datetime: {pe}')
+            raise ParserError
         except OverflowError as oe:
             logging.error(f'Overflow error when parsing date string to datetime: {oe}')
 
     elif _data_type is int:
         try:
             _value = int(float(_value))
-        except Exception as exc:
-            logging.error(f'Error converting value to integer: {exc}')
+        except ValueError as ve:
+            logging.error(f'Error converting value to integer: {ve}')
+            raise ValueError("Error converting value to integer")
 
     elif _data_type is float:
         try:
             _value = float(_value)
-        except Exception as exc:
-            logging.error(f'Error converting value to float: {exc}')
+        except ValueError as ve:
+            logging.error(f'Error converting value to float: {ve}')
+            raise ValueError(f'Error converting value to float')
 
     elif _data_type is bool:
+        bool_map = {
+            "true": True,
+            "false": False,
+            "t": True,
+            "f": False,
+            "1": True,
+            "0": False,
+            "-1": False
+        }
         try:
-            _value = bool(_value)
-        except Exception as exc:
+            _value = bool_map[str(_value).lower()]
+        except KeyError as exc:
             logging.error(f'Error converting value to bool: {exc}')
+            raise KeyError('Error converting value to bool')
 
-    assert type(_value) is _data_type
+    assert isinstance(_value, _data_type)
 
     return _value
 
