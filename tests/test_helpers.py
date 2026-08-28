@@ -19,6 +19,7 @@ class TestParseXML:
         assert isinstance(result, etree._ElementTree)
 
     def test_parse_xml_returns_element_tree_from_xml_packet_byte_string(self):
+
         test_data = (b'<?xpacket ?>'
                      b'<root><child></child></root>')
 
@@ -47,7 +48,6 @@ class TestCastDataType:
 
     @pytest.mark.parametrize("test_data", ["2026-04-20T14:15:43.00", "2026-04-20", "4-20-2026", "4/20/2026", "20260420", "2026:04:20"])
     def test_cast_datatype_date_string_to_datetime(self, test_data):
-
         result = cast_datatype(test_data, datetime)
         assert isinstance(result, datetime)
 
