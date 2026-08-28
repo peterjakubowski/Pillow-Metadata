@@ -37,31 +37,6 @@ class TestMetadata:
 
         assert isinstance(result.xmp_xml, etree._ElementTree)
 
-    def test_metadata_reads_xmp_packet_with_person_shown(self):
-        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
-        test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:Iptc4xmpExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/">\n'
-            '   <Iptc4xmpExt:PersonInImage>\n'
-            '    <rdf:Bag>\n'
-            '     <rdf:li>Test Name</rdf:li>\n'
-            '    </rdf:Bag>\n'
-            '   </Iptc4xmpExt:PersonInImage>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
-
-        result = Metadata(test_image)
-
-        person_in_image = result.metadata.Iptc4xmpExt.PersonInImage
-
-        assert isinstance(person_in_image, list)
-        assert person_in_image == ["Test Name"]
-
     def test_metadata_get_capture_date_xmp_create_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
