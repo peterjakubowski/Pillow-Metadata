@@ -58,15 +58,10 @@ class Metadata:
             self.filename = pil_image.filename
 
         try:
-            self.xmp_xml = parse_xml(pil_image.info['xmp'])
-        except KeyError as ke:
-            logging.error(f"Key Error: {ke}")
+            self.xmp_xml = parse_xml(pil_image.info.get('xmp', b'<?xpacket ?><root></root>'))
         except TypeError as te:
             logging.error(f"Type Error: {te}")
-        except etree.XMLSyntaxError as xse:
-            logging.error(f"XML Syntax Error: {xse}")
-        except etree.ParseError as pe:
-            logging.error(f"Parse Error: {pe}")
+            raise TypeError
         finally:
             self.metadata = Schemas(xml_tree=self.xmp_xml)
 
