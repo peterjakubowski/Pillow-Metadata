@@ -62,7 +62,6 @@ pip install https://github.com/peterjakubowski/Pillow-Metadata/archive/main.zip
 The following package versions were used when this was last updated, the use of different versions has not been tested and may affect the functionality of the tool.
 
 ```commandline
-Python 3.12.8
 Pillow 12.2.0
 lxml 6.1.0
 python-dateutil 2.9.0.post0
