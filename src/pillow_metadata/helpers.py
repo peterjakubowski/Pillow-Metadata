@@ -10,7 +10,7 @@ import logging
 from datetime import datetime
 import dateutil.parser
 from dateutil.parser import ParserError
-from typing import ByteString, AnyStr, Any
+from typing import Any
 from lxml import etree
 from PIL import Image
 
@@ -19,7 +19,7 @@ from PIL import Image
 # ========================
 
 
-def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
+def parse_xml(_xmp_xml: bytes) -> etree._ElementTree:
     """
     Parses the raw XMP packet XML and returns it as an ElementTree using lxml.
 
@@ -37,7 +37,7 @@ def parse_xml(_xmp_xml: ByteString) -> etree._ElementTree:
     return _xmp_xml
 
 
-def cast_datatype(_value: Any, _data_type: Any) -> AnyStr | datetime | int | float | bool:
+def cast_datatype(_value: Any, _data_type: Any) -> str | datetime | int | float | bool:
     """
 
     :return:
@@ -83,8 +83,6 @@ def cast_datatype(_value: Any, _data_type: Any) -> AnyStr | datetime | int | flo
             logging.error(f'Error converting value to bool: {exc}')
             raise KeyError('Error converting value to bool')
 
-    assert isinstance(_value, _data_type)
-
     return _value
 
 
@@ -103,10 +101,8 @@ def build_exif_dictionary(_exif: Image.Exif, _exif_object: object):
             if not isinstance(value, data_type := _exif_object.__annotations__[exif_tag]):
                 try:
                     value = cast_datatype(_value=value, _data_type=data_type)
-                except TypeError as te:
-                    logging.error(f'Type Error: {te}')
-                except AssertionError as ae:
-                    logging.error(f'Assertion Error: {ae}')
+                except (TypeError, ValueError, KeyError, ParserError):
+                    logging.error(f'Failed to cast metadata value: "{value}"')
 
             _exif_object.__setattr__(exif_tag, value)
 
