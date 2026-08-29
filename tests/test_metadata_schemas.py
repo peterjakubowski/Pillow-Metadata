@@ -617,7 +617,25 @@ class TestDc:
         assert description == "Test Description"
 
     def test_metadata_dc_format(self):
-        pass
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        test_image.info['xmp'] = (
+            '<?xpacket begin="" id=""?>\n'
+            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            '  <rdf:Description rdf:about=""\n'
+            '    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+            '   <dc:format>Test Format</dc:format>\n'
+            '  </rdf:Description>\n'
+            ' </rdf:RDF>\n'
+            '</x:xmpmeta>\n'
+            '<?xpacket end="w"?>').encode("utf-8")
+
+        result = Metadata(test_image)
+
+        dc_format = result.metadata.dc.format
+
+        assert isinstance(dc_format, str)
+        assert dc_format == "Test Format"
 
     def test_metadata_dc_rights(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
