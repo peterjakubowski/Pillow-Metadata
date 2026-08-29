@@ -46,7 +46,9 @@ class TestParseXML:
 
 class TestCastDataType:
 
-    @pytest.mark.parametrize("test_data", ["2026-04-20T14:15:43.00", "2026-04-20", "4-20-2026", "4/20/2026", "20260420", "2026:04:20"])
+    @pytest.mark.parametrize("test_data", ["2026-04-20T14:15:43.00", "2026-04-20 14:15:43.00", "2026-04-20 14:15:43",
+                                           "2026:04:20T14:15:43.00", "2026:04:20 14:15:43.00", "2026:04:20 14:15:43",
+                                           "2026-04-20", "4-20-2026", "4/20/2026", "20260420", "2026:04:20"])
     def test_cast_datatype_date_string_to_datetime(self, test_data):
         result = cast_datatype(test_data, datetime)
         assert isinstance(result, datetime)
