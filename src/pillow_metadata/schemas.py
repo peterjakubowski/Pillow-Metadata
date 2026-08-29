@@ -29,7 +29,8 @@ NS_MAP = {
     'dc': '{http://purl.org/dc/elements/1.1/}',
     'aux': '{http://ns.adobe.com/exif/1.0/aux/}',
     'tiff': '{http://ns.adobe.com/tiff/1.0/}',
-    'xml': '{http://www.w3.org/XML/1998/namespace}'
+    'xml': '{http://www.w3.org/XML/1998/namespace}',
+    'exif': '{http://ns.adobe.com/exif/1.0/}'
 }
 
 # ========================
