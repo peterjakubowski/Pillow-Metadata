@@ -12,6 +12,8 @@ from datetime import datetime
 from lxml import etree
 from typing import Any, Literal
 from .helpers import cast_datatype
+from dateutil.parser import ParserError
+
 
 # =======================
 # ==== Namespace Map ====
@@ -53,6 +55,8 @@ class XPath:
         self.annotation = owner.__annotations__.get(name)
 
     def __get__(self, instance: Any, owner=None) -> str | int | float | list | datetime | None:
+        if instance is None:
+            return self
         value = self.lookup(instance._xml_tree)
         instance.__dict__[self.attrib_name] = value
         return value
@@ -75,24 +79,24 @@ class XPath:
                             value = ele.attrib[self.tag].strip()
 
             elif self.datatype == 'bag':
-                if ele is not None:
-                    items = []
-                    bag = ele.getchildren()
-                    if len(bag) == 1:
-                        for li in bag[0].iterchildren():
-                            items.append(li.text.strip())
-                        value = items
+                if ele is not None and len(ele) == 1:
+                    bag = ele[0]
+                    items = [
+                        li.text.strip()
+                        for li in bag
+                        if li.text is not None
+                    ]
+                    value = items
                 else:
                     logging.debug(f"Bag with tag '{self.tag}' nof found.")
 
             elif self.datatype == 'alt':
-                if ele is not None:
-                    alt = ele.getchildren()
-                    if len(alt) == 1:
-                        for li in alt[0].iterchildren():
-                            if NS_MAP['xml'] + 'lang' in li.attrib and li.attrib[NS_MAP['xml'] + 'lang'] == 'x-default':
-                                value = li.text.strip()
-                                break
+                if ele is not None and len(ele) == 1:
+                    alt = ele[0]
+                    for li in alt:
+                        if li.attrib.get(f"{NS_MAP['xml']}lang") == 'x-default' and li.text is not None:
+                            value = li.text.strip()
+                            break
                 else:
                     logging.debug(f"Alt with tag '{self.tag}' not found.")
 
@@ -103,14 +107,9 @@ class XPath:
         if value and not isinstance(value, self.annotation):
             try:
                 value = cast_datatype(_value=value, _data_type=self.annotation)
-            except TypeError as te:
-                logging.error(f'Type Error: {te}')
-            except AssertionError as ae:
-                logging.error(f'Assertion Error: {ae} {value} {self.annotation}')
-            else:
-                return value
-
-            return None
+            except (TypeError, ValueError, KeyError, ParserError):
+                logging.error(f'Failed to cast metadata value: "{value}"')
+                value = None
 
         return value
 
