@@ -2,27 +2,25 @@
 
 # Pillow-Metadata
 
-Python class that transforms XMP and Exif metadata into a standardized Python dataclass data structure from a Pillow (PIL) source image.
+`Pillow-Metadata` transforms raw XMP XML packets and integer-keyed EXIF dictionaries extracted from Pillow (`PIL.Image`) into structured, type-hinted Python dataclasses. It provides a lightweight, pure-Python abstraction layer that makes XMP image metadata accessible via readable dot-notation properties without requiring system-level C libraries or CLI tools.
 
+**Supported Metadata Namespaces**
 
-## Background
-
-I created this Python class to more easily extract image metadata in Python without depending on other packages like python-xmp-toolkit, which requires Exempi; and PyExif, which requires exiftool. Especially for simple read tasks, I wanted a tool that utilized Pillow, the Python Imaging Library. Pillow has methods to read metadata from images, this class will simply take the data returned by these methods and reformat it into a dataclass that is easier to work with.
-
-The two Pillow methods used for metadata extraction are:
-
-* PIL.Image.info['xmp']: Returns the image's XMP packet in XML form.
-
-* PIL.Image.getexif(): Returns a dictionary of the image's Exif values where the keys are numbers that must be looked up using the PIL.Image.ExifTags module.
-
-There is also a separate Pillow method, .getxmp(), that returns a dictionary containing the XMP tags. This method requires defusedxml to be installed, and I am not fond of the resulting structure.
-
-This class parses the XMP XML and creates a dataclass data structure where the class names are the XMP prefix and attributes are the XMP local name. This class also takes the Exif dictionary and replaces the numeric keys with Exif tag names. The resulting class contains the combined XMP and Exif metadata.
+| Namespace           | Dataclass Attribute                          | Key Extracted Fields                                                                                                                                                                |
+|:--------------------|:---------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Dublin Core**     | `meta.metadata.dc`                           | `creator`, `description`, `format`, `rights`, `subject` (keywords), `title`                                                                                                         |
+| **Basic XMP**       | `meta.metadata.xmp`                          | `CreateDate`, `CreatorTool`, `Identifier`, `Label`, `MetadataDate`, `ModifyDate`, `Nickname`, `Rating`                                                                              |
+| **XMP Rights**      | `meta.metadata.xmpRights`                    | `Certificate`, `Marked`, `Owner`, `UsageTerms`, `WebStatement`                                                                                                                      |
+| **XMP MM**          | `meta.metadata.xmpMM`                        | `DocumentID`, `OriginalDocumentID`, `InstanceID`                                                                                                                                    |
+| **EXIF Data**       | `meta.metadata.exif`                         | `ResolutionUnit`, `ExifOffset`, `ImageDescription`, `DateTime`, `DateTimeOriginal`, `Make`, `Model`, `Orientation`, `Software`, `YResolution`, `Copyright`, `XResolution`, `Artist` |
+| **Photoshop**       | `meta.metadata.photoshop`                    | `DateCreated`, `Urgency`, `City`, `State`, `TransmissionReference`                                                                                                                  |
+| **IPTC Core & Ext** | `meta.metadata.Iptc4xmpCore` / `Iptc4xmpExt` | `Location`, `CountryCode`, `AltTextAccessibility`, `PersonInImage`                                                                                                                  |
+| **Camera & Lens**   | `meta.metadata.aux` / `tiff`                 | `SerialNumber`, `LensInfo`, `Lens`, `LensSerialNumber`, `FlashCompensation`, `FujiRatingAlreadyApplied`, `Make`, `Model`                                                            |
 
 ## Usage
 
 ```python
-from pillow_metadata.metadata import Metadata
+from pillow_metadata import Metadata
 from PIL import Image
 
 # open an image using Pillow
@@ -62,8 +60,8 @@ pip install https://github.com/peterjakubowski/Pillow-Metadata/archive/main.zip
 The following package versions were used when this was last updated, the use of different versions has not been tested and may affect the functionality of the tool.
 
 ```commandline
-Pillow 12.2.0
-lxml 6.1.0
+Pillow>=12.2.0
+lxml>=6.1.0
 python-dateutil 2.9.0.post0
 
 ```
