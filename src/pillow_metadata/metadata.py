@@ -79,11 +79,14 @@ class Metadata:
         search = deque([('xmp', 'CreateDate'), ('exif', 'DateTime'), ('exif', 'DateTimeOriginal'), ('photoshop', 'DateCreated')])
         while search:
             prefix, localname = search.popleft()
-            if capture_date := self.metadata.__getattribute__(prefix).__getattribute__(localname):
+            capture_date = getattr(getattr(self.metadata, prefix), localname)
+            if capture_date:
                 return capture_date
 
-        if creation_date := Path(self.filename):  # Fallback to file creation time
-            date = datetime.fromtimestamp(creation_date.stat().st_birthtime)
+        if self.filename and Path(self.filename).is_file():
+            stat_res = Path(self.filename).stat()
+            mtime = getattr(stat_res, 'st_birthtime', stat_res.st_birthtime)
+            date = datetime.fromtimestamp(mtime)
             return date
 
         return None
@@ -118,7 +121,8 @@ class Metadata:
         # Get location data
         location = []
         for prefix, localname in [('Iptc4xmpCore', 'Location'), ('photoshop', 'City'), ('photoshop', 'State')]:
-            if loc := self.metadata.__getattribute__(prefix).__getattribute__(localname):
+            loc = getattr(getattr(self.metadata, prefix), localname)
+            if loc:
                 location.append(loc)
         if location:
             info.append("Location: " + ", ".join(location))
