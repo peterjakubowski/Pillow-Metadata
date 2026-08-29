@@ -865,3 +865,122 @@ class TestTiff:
         assert isinstance(model, str)
         assert model == "Test Model"
 
+
+class TestExif:
+
+    def test_metadata_exif_resolution_unit(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[296] = 2
+        result = Metadata(test_image)
+        resolution_unit = result.metadata.exif.ResolutionUnit
+        assert isinstance(resolution_unit, int)
+        assert resolution_unit == 2
+
+    def test_metadata_exif_exif_offset(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[34665] = 2
+        result = Metadata(test_image)
+        exif_offset = result.metadata.exif.ExifOffset
+        assert isinstance(exif_offset, int)
+        assert exif_offset == 2
+
+    def test_metadata_exif_image_description(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[270] = "Test Description"
+        result = Metadata(test_image)
+        image_description = result.metadata.exif.ImageDescription
+        assert isinstance(image_description, str)
+        assert image_description == "Test Description"
+
+    def test_metadata_exif_make(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[271] = "Test Make"
+        result = Metadata(test_image)
+        make = result.metadata.exif.Make
+        assert isinstance(make, str)
+        assert make == "Test Make"
+
+    def test_metadata_exif_model(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[272] = "Test Model"
+        result = Metadata(test_image)
+        model = result.metadata.exif.Model
+        assert isinstance(model, str)
+        assert model == "Test Model"
+
+    def test_metadata_exif_software(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[305] = "Test Software"
+        result = Metadata(test_image)
+        software = result.metadata.exif.Software
+        assert isinstance(software, str)
+        assert software == "Test Software"
+
+    def test_metadata_exif_orientation(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[274] = 1
+        result = Metadata(test_image)
+        orientation = result.metadata.exif.Orientation
+        assert isinstance(orientation, int)
+        assert orientation == 1
+
+    def test_metadata_exif_date_time(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[306] = "2026-04-20T14:15:43.00"
+        result = Metadata(test_image)
+        date_time = result.metadata.exif.DateTime
+        assert isinstance(date_time, datetime)
+        assert date_time == datetime(2026, 4, 20, 14, 15, 43)
+
+    def test_metadata_exif_date_time_original(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[36867] = "2026:04:20T14:15:43.00"
+        result = Metadata(test_image)
+        date_time_original = result.metadata.exif.DateTimeOriginal
+        assert isinstance(date_time_original, datetime)
+        assert date_time_original == datetime(2026, 4, 20, 14, 15, 43)
+
+    def test_metadata_exif_y_resolution(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[283] = 300.0
+        result = Metadata(test_image)
+        y_resolution = result.metadata.exif.YResolution
+        assert isinstance(y_resolution, float)
+        assert y_resolution == 300.0
+
+    def test_metadata_exif_copyright(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[33432] = "Test Copyright"
+        result = Metadata(test_image)
+        exif_copyright = result.metadata.exif.Copyright
+        assert isinstance(exif_copyright, str)
+        assert exif_copyright == "Test Copyright"
+
+    def test_metadata_exif_x_resolution(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[282] = 300.0
+        result = Metadata(test_image)
+        x_resolution = result.metadata.exif.XResolution
+        assert isinstance(x_resolution, float)
+        assert x_resolution == 300.0
+
+    def test_metadata_exif_artist(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[315] = "Test Artist Name"
+        result = Metadata(test_image)
+        artist = result.metadata.exif.Artist
+        assert isinstance(artist, str)
+        assert artist == "Test Artist Name"
