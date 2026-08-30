@@ -178,6 +178,26 @@ class TestXmp:
         assert isinstance(rating, int)
         assert rating == 5
 
+    def test_metadata_xmp_rating_none(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        test_image.info['xmp'] = (
+            '<?xpacket begin="" id=""?>\n'
+            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            '  <rdf:Description rdf:about=""\n'
+            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            '   <xmp:Rating></xmp:Rating>\n'
+            '  </rdf:Description>\n'
+            ' </rdf:RDF>\n'
+            '</x:xmpmeta>\n'
+            '<?xpacket end="w"?>').encode("utf-8")
+
+        result = Metadata(pil_image=test_image)
+
+        rating = result.metadata.xmp.Rating
+
+        assert rating is None
+
 
 class TestXmpRights:
 
