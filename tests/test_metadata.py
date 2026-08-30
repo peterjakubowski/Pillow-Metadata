@@ -59,6 +59,70 @@ class TestMetadata:
         assert capture_date == result.metadata.xmp.CreateDate
         assert capture_date == datetime(2026, 4, 20, 16, 20)
 
+    def test_metadata_get_capture_date_exif_date_time(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[306] = "2026-04-20T14:15:43.00"
+        result = Metadata(test_image)
+        capture_date = result.get_capture_date()
+        assert isinstance(capture_date, datetime)
+        assert capture_date == result.metadata.exif.DateTime
+        assert capture_date == datetime(2026, 4, 20, 14, 15, 43)
+
+    def test_metadata_get_capture_date_exif_date_time_original(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        exif_data = test_image.getexif()
+        exif_data[36867] = "2026-04-20T14:15:43.00"
+        result = Metadata(test_image)
+        capture_date = result.get_capture_date()
+        assert isinstance(capture_date, datetime)
+        assert capture_date == result.metadata.exif.DateTimeOriginal
+        assert capture_date == datetime(2026, 4, 20, 14, 15, 43)
+
+    def test_metadata_get_capture_date_photoshop_date_created(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        test_image.info['xmp'] = (
+            '<?xpacket begin="" id=""?>\n'
+            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            '  <rdf:Description rdf:about=""\n'
+            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            '   <photoshop:DateCreated>2026-04-20T16:20:00.00</photoshop:DateCreated>\n'
+            '  </rdf:Description>\n'
+            ' </rdf:RDF>\n'
+            '</x:xmpmeta>\n'
+            '<?xpacket end="w"?>').encode("utf-8")
+
+        result = Metadata(pil_image=test_image)
+
+        capture_date = result.get_capture_date()
+
+        assert isinstance(capture_date, datetime)
+        assert capture_date == result.metadata.photoshop.DateCreated
+        assert capture_date == datetime(2026, 4, 20, 16, 20)
+
+    def test_metadata_get_capture_date_birth_time(self, tmp_path):
+        temp_image_path = tmp_path / "test_image_no_meta.jpg"
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        test_image.save(temp_image_path)
+        try:
+            with Image.open(temp_image_path) as img:
+                result = Metadata(pil_image=img)
+                capture_date = result.get_capture_date()
+                assert isinstance(capture_date, datetime)
+        finally:
+            if temp_image_path.exists():
+                temp_image_path.unlink()
+
+    def test_metadata_get_capture_date_none_found(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+
+        result = Metadata(pil_image=test_image)
+
+        capture_date = result.get_capture_date()
+
+        assert capture_date is None
+
     def test_metadata_get_capture_date_string_xmp_create_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
