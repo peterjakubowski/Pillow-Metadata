@@ -85,7 +85,7 @@ class Metadata:
 
         if self.filename and Path(self.filename).is_file():
             stat_res = Path(self.filename).stat()
-            mtime = getattr(stat_res, 'st_birthtime', stat_res.st_birthtime)
+            mtime = getattr(stat_res, 'st_birthtime', stat_res.st_mtime)
             date = datetime.fromtimestamp(mtime)
             return date
 
