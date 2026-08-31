@@ -108,4 +108,4 @@ class TestBuildExifDict:
         exif_data[306] = "2026-04-20T14:15:43.00"
         result = build_exif_dictionary(exif_data, Exif())
         assert result.DateTime is not None
-        assert result.DateTime == datetime(2026, 4, 20, 14, 15, 43)
+        assert result.DateTime == datetime(2026, 4, 20, 14, 15, 43, tzinfo=None)
