@@ -16,6 +16,8 @@ from lxml import etree
 
 from .helpers import cast_datatype
 
+logger = logging.getLogger(__name__)
+
 # =======================
 # ==== Namespace Map ====
 # =======================
@@ -65,7 +67,7 @@ class XPath:
     def lookup(self, xml: etree._ElementTree) -> str | int | float | list | datetime | None:
         value: str | list[str] | int | float | datetime | None = None
         if xml is None or xml.getroot() is None:
-            logging.warning("XML tree or root is None.")
+            logger.warning("XML tree or root is None.")
             return None
 
         try:
@@ -76,8 +78,7 @@ class XPath:
                 else:
                     ele = xml.find(f".//{NS_MAP.get('rdf')}Description")
                     if ele is not None and ele.attrib:
-                        if self.tag in ele.attrib:
-                            value = str(ele.attrib[self.tag].strip())
+                        value = str(ele.attrib.get(self.tag, None)).strip()
 
             elif self.datatype == 'bag':
                 if ele is not None and len(ele) == 1:
@@ -89,7 +90,7 @@ class XPath:
                     ]
                     value = items
                 else:
-                    logging.debug(f"Bag with tag '{self.tag}' nof found.")
+                    logger.debug(f"Bag with tag '{self.tag}' nof found.")
 
             elif self.datatype == 'alt':
                 if ele is not None and len(ele) == 1:
@@ -99,17 +100,17 @@ class XPath:
                             value = li.text.strip()
                             break
                 else:
-                    logging.debug(f"Alt with tag '{self.tag}' not found.")
+                    logger.debug(f"Alt with tag '{self.tag}' not found.")
 
-        except Exception as e:
-            logging.error(f"An unexpected error occurred during XML lookup for tag '{self.tag}': {e}")
+        except ValueError as e:
+            logger.error(f"An unexpected error occurred during XML lookup for tag '{self.tag}': {e}")
             return None
 
         if value and self.annotation is not None and not isinstance(value, self.annotation):
             try:
                 value = cast_datatype(_value=value, _data_type=self.annotation)
             except (TypeError, ValueError, KeyError, ParserError):
-                logging.error(f'Failed to cast metadata value: "{value}"')
+                logger.error(f'Failed to cast metadata value: "{value}"')
                 value = None
 
         return value
