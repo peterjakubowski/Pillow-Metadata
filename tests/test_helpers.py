@@ -48,6 +48,11 @@ class TestParseXML:
 
 class TestCastDataType:
 
+    @pytest.mark.parametrize("test_data", [datetime, int, float, str, bool])
+    def test_cast_datatype_none_value_returns_none(self, test_data):
+        result = cast_datatype(None, test_data)
+        assert result is None
+
     @pytest.mark.parametrize("test_data", ["2026-04-20T14:15:43.00", "2026-04-20 14:15:43.00", "2026-04-20 14:15:43",
                                            "2026:04:20T14:15:43.00", "2026:04:20 14:15:43.00", "2026:04:20 14:15:43",
                                            "2026-04-20", "4-20-2026", "4/20/2026", "20260420", "2026:04:20"])
