@@ -183,3 +183,11 @@ class TestMetadata:
         image_info_string = result.image_info()
 
         assert image_info_string == expected_result
+
+    def test_metadata_to_dict_returns_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(test_image)
+        result_dict = result.metadata.to_dict(include_none=False)
+        assert isinstance(result_dict, dict)
+        assert result_dict == {}
+        assert str(result.metadata) == '{}'
