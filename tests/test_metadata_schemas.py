@@ -8,6 +8,12 @@ from src.pillow_metadata.metadata import Metadata
 
 class TestXmp:
 
+    def test_metadata_xmp_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {}
+
     def test_metadata_xmp_create_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -29,6 +35,9 @@ class TestXmp:
         assert isinstance(create_date, datetime)
         assert create_date == datetime(2026, 4, 20, 16, 20)
 
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'CreateDate': datetime(2026, 4, 20, 16, 20)}
+
     def test_metadata_xmp_creator_tool(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -49,6 +58,9 @@ class TestXmp:
 
         assert isinstance(creator_tool, str)
         assert creator_tool == "Test Creator Tool"
+
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'CreatorTool': "Test Creator Tool"}
 
     def test_metadata_xmp_identifier(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -75,6 +87,9 @@ class TestXmp:
         assert isinstance(identifier, list)
         assert identifier == ["Test Identifier"]
 
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'Identifier': ["Test Identifier"]}
+
     def test_metadata_xmp_label(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -95,6 +110,9 @@ class TestXmp:
 
         assert isinstance(label, str)
         assert label == "Test Label"
+
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'Label': "Test Label"}
 
     def test_metadata_xmp_metadata_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -117,6 +135,9 @@ class TestXmp:
         assert isinstance(metadata_date, datetime)
         assert metadata_date == datetime(2026, 4, 20, 16, 20)
 
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'MetadataDate': datetime(2026, 4, 20, 16, 20)}
+
     def test_metadata_xmp_modify_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -137,6 +158,9 @@ class TestXmp:
 
         assert isinstance(modify_date, datetime)
         assert modify_date == datetime(2026, 4, 20, 16, 20)
+
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'ModifyDate': datetime(2026, 4, 20, 16, 20)}
 
     def test_metadata_xmp_nickname(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -159,6 +183,9 @@ class TestXmp:
         assert isinstance(nickname, str)
         assert nickname == "Test Nickname"
 
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'Nickname': "Test Nickname"}
+
     def test_metadata_xmp_rating(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -180,6 +207,9 @@ class TestXmp:
         assert isinstance(rating, int)
         assert rating == 5
 
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {'Rating': 5}
+
     def test_metadata_xmp_rating_none(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -200,8 +230,17 @@ class TestXmp:
 
         assert rating is None
 
+        xmp_dict = result.metadata.xmp.to_dict()
+        assert xmp_dict == {}
+
 
 class TestXmpRights:
+
+    def test_metadata_xmp_rights_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        xmp_rights_dict = result.metadata.xmpRights.to_dict()
+        assert xmp_rights_dict == {}
 
     def test_metadata_xmp_rights_certificate(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -224,6 +263,9 @@ class TestXmpRights:
         assert isinstance(certificate, str)
         assert certificate == "Test Certificate"
 
+        xmp_rights_dict = result.metadata.xmpRights.to_dict()
+        assert xmp_rights_dict == {'Certificate': "Test Certificate"}
+
     @pytest.mark.parametrize("test_value, expected_value", [("True", True), ("False", False)])
     def test_metadata_xmp_rights_marked(self, test_value, expected_value):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -245,6 +287,9 @@ class TestXmpRights:
 
         assert isinstance(marked, bool)
         assert marked is expected_value
+
+        xmp_rights_dict = result.metadata.xmpRights.to_dict()
+        assert xmp_rights_dict == {'Marked': expected_value}
 
     def test_metadata_xmp_rights_owner(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -271,6 +316,9 @@ class TestXmpRights:
         assert isinstance(owner, list)
         assert owner == ["Test Owner"]
 
+        xmp_rights_dict = result.metadata.xmpRights.to_dict()
+        assert xmp_rights_dict == {'Owner': ["Test Owner"]}
+
     def test_metadata_xmp_rights_usage_terms(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -291,6 +339,9 @@ class TestXmpRights:
 
         assert isinstance(usage_terms, str)
         assert usage_terms == "Test Usage Terms"
+
+        xmp_rights_dict = result.metadata.xmpRights.to_dict()
+        assert xmp_rights_dict == {'UsageTerms': "Test Usage Terms"}
 
     def test_metadata_xmp_rights_web_statement(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -313,8 +364,17 @@ class TestXmpRights:
         assert isinstance(web_statement, str)
         assert web_statement == "Test Web Statement"
 
+        xmp_rights_dict = result.metadata.xmpRights.to_dict()
+        assert xmp_rights_dict == {'WebStatement': "Test Web Statement"}
+
 
 class TestXmpMM:
+
+    def test_metadata_xmp_mm_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        xmp_mm_dict = result.metadata.xmpMM.to_dict()
+        assert xmp_mm_dict == {}
 
     def test_metadata_xmp_mm_document_id(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -337,6 +397,9 @@ class TestXmpMM:
         assert isinstance(document_id, str)
         assert document_id == "Test Document ID"
 
+        xmp_mm_dict = result.metadata.xmpMM.to_dict()
+        assert xmp_mm_dict == {'DocumentID': "Test Document ID"}
+
     def test_metadata_xmp_mm_original_document_id(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -357,6 +420,9 @@ class TestXmpMM:
 
         assert isinstance(original_document_id, str)
         assert original_document_id == "Test Original Document ID"
+
+        xmp_mm_dict = result.metadata.xmpMM.to_dict()
+        assert xmp_mm_dict == {'OriginalDocumentID': "Test Original Document ID"}
 
     def test_metadata_xmp_mm_instance_id(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -379,8 +445,17 @@ class TestXmpMM:
         assert isinstance(instance_id, str)
         assert instance_id == "Test Instance ID"
 
+        xmp_mm_dict = result.metadata.xmpMM.to_dict()
+        assert xmp_mm_dict == {'InstanceID': "Test Instance ID"}
+
 
 class TestIptc4XmpCore:
+
+    def test_metadata_iptc_xmp_core_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        iptc_dict = result.metadata.Iptc4xmpCore.to_dict()
+        assert iptc_dict == {}
 
     def test_metadata_iptc_xmp_core_alt_text_accessibility(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -407,6 +482,9 @@ class TestIptc4XmpCore:
         assert isinstance(alt_text_accessibility, str)
         assert alt_text_accessibility == "Test Alt Text"
 
+        iptc_dict = result.metadata.Iptc4xmpCore.to_dict()
+        assert iptc_dict == {'AltTextAccessibility': "Test Alt Text"}
+
     def test_metadata_iptc_xmp_core_location(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -427,6 +505,9 @@ class TestIptc4XmpCore:
 
         assert isinstance(location, str)
         assert location == "Test Location"
+
+        iptc_dict = result.metadata.Iptc4xmpCore.to_dict()
+        assert iptc_dict == {'Location': "Test Location"}
 
     def test_metadata_iptc_xmp_core_country_code(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -449,8 +530,17 @@ class TestIptc4XmpCore:
         assert isinstance(country_code, str)
         assert country_code == "Test Country Code"
 
+        iptc_dict = result.metadata.Iptc4xmpCore.to_dict()
+        assert iptc_dict == {'CountryCode': "Test Country Code"}
+
 
 class TestIptc4XmpExt:
+
+    def test_metadata_iptc_xmp_ext_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        iptc_ext_dict = result.metadata.Iptc4xmpExt.to_dict()
+        assert iptc_ext_dict == {}
 
     def test_metadata_iptc_xmp_ext_person_in_image(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -477,8 +567,17 @@ class TestIptc4XmpExt:
         assert isinstance(person_in_image, list)
         assert person_in_image == ["Test Name"]
 
+        iptc_ext_dict = result.metadata.Iptc4xmpExt.to_dict()
+        assert iptc_ext_dict == {'PersonInImage': ["Test Name"]}
+
 
 class TestPhotoshop:
+
+    def test_metadata_photoshop_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        photoshop_dict = result.metadata.photoshop.to_dict()
+        assert photoshop_dict == {}
 
     def test_metadata_photoshop_date_created(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -501,6 +600,9 @@ class TestPhotoshop:
         assert isinstance(date_created, datetime)
         assert date_created == datetime(2026, 4, 20, 16, 20)
 
+        photoshop_dict = result.metadata.photoshop.to_dict()
+        assert photoshop_dict == {'DateCreated': datetime(2026, 4, 20, 16, 20)}
+
     def test_metadata_photoshop_urgency(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -521,6 +623,9 @@ class TestPhotoshop:
 
         assert isinstance(urgency, int)
         assert urgency == 5
+
+        photoshop_dict = result.metadata.photoshop.to_dict()
+        assert photoshop_dict == {'Urgency': 5}
 
     def test_metadata_photoshop_city(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -543,6 +648,9 @@ class TestPhotoshop:
         assert isinstance(city, str)
         assert city == "Test City"
 
+        photoshop_dict = result.metadata.photoshop.to_dict()
+        assert photoshop_dict == {'City': "Test City"}
+
     def test_metadata_photoshop_state(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -563,6 +671,9 @@ class TestPhotoshop:
 
         assert isinstance(state, str)
         assert state == "Test State"
+
+        photoshop_dict = result.metadata.photoshop.to_dict()
+        assert photoshop_dict == {'State': "Test State"}
 
     def test_metadata_photoshop_transmission_reference(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -585,8 +696,17 @@ class TestPhotoshop:
         assert isinstance(transmission_reference, str)
         assert transmission_reference == "Test Transmission Reference"
 
+        photoshop_dict = result.metadata.photoshop.to_dict()
+        assert photoshop_dict == {'TransmissionReference': "Test Transmission Reference"}
+
 
 class TestDc:
+
+    def test_metadata_dc_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        dc_dict = result.metadata.dc.to_dict()
+        assert dc_dict == {}
 
     def test_metadata_dc_creator(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -613,6 +733,9 @@ class TestDc:
         assert isinstance(creator, list)
         assert creator == ["Test Name"]
 
+        dc_dict = result.metadata.dc.to_dict()
+        assert dc_dict == {"creator": ["Test Name"]}
+
     def test_metadata_dc_description(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -638,6 +761,9 @@ class TestDc:
         assert isinstance(description, str)
         assert description == "Test Description"
 
+        dc_dict = result.metadata.dc.to_dict()
+        assert dc_dict == {"description": "Test Description"}
+
     def test_metadata_dc_format(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -658,6 +784,9 @@ class TestDc:
 
         assert isinstance(dc_format, str)
         assert dc_format == "Test Format"
+
+        dc_dict = result.metadata.dc.to_dict()
+        assert dc_dict == {"format": "Test Format"}
 
     def test_metadata_dc_rights(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -684,6 +813,9 @@ class TestDc:
         assert isinstance(rights, str)
         assert rights == "Test Rights"
 
+        dc_dict = result.metadata.dc.to_dict()
+        assert dc_dict == {"rights": "Test Rights"}
+
     def test_metadata_dc_subject(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -709,6 +841,9 @@ class TestDc:
         assert isinstance(subject, list)
         assert subject == ["Test Subject"]
 
+        dc_dict = result.metadata.dc.to_dict()
+        assert dc_dict == {"subject": ["Test Subject"]}
+
     def test_metadata_dc_title(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -730,8 +865,17 @@ class TestDc:
         assert isinstance(title, str)
         assert title == "Test Title"
 
+        dc_dict = result.metadata.dc.to_dict()
+        assert dc_dict == {"title": "Test Title"}
+
 
 class TestAux:
+
+    def test_metadata_aux_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        aux_dict = result.metadata.aux.to_dict()
+        assert aux_dict == {}
 
     def test_metadata_aux_serial_number(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -754,6 +898,9 @@ class TestAux:
         assert isinstance(serial_number, str)
         assert serial_number == "Test Serial Number"
 
+        aux_dict = result.metadata.aux.to_dict()
+        assert aux_dict == {"SerialNumber": "Test Serial Number"}
+
     def test_metadata_aux_lens_info(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -774,6 +921,9 @@ class TestAux:
 
         assert isinstance(lens_info, str)
         assert lens_info == "Test Lens Info"
+
+        aux_dict = result.metadata.aux.to_dict()
+        assert aux_dict == {"LensInfo": "Test Lens Info"}
 
     def test_metadata_aux_lens(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -796,6 +946,9 @@ class TestAux:
         assert isinstance(lens, str)
         assert lens == "Test Lens"
 
+        aux_dict = result.metadata.aux.to_dict()
+        assert aux_dict == {"Lens": "Test Lens"}
+
     def test_metadata_aux_lens_serial_number(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -817,6 +970,9 @@ class TestAux:
         assert isinstance(lens_serial_number, str)
         assert lens_serial_number == "Test Lens Serial Number"
 
+        aux_dict = result.metadata.aux.to_dict()
+        assert aux_dict == {"LensSerialNumber": "Test Lens Serial Number"}
+
     def test_metadata_aux_flash_compensation(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -837,6 +993,9 @@ class TestAux:
 
         assert isinstance(flash_compensation, str)
         assert flash_compensation == "Test Flash Compensation"
+
+        aux_dict = result.metadata.aux.to_dict()
+        assert aux_dict == {"FlashCompensation": "Test Flash Compensation"}
 
     @pytest.mark.parametrize("test_value, expected_value", [("True", True), ("False", False)])
     def test_metadata_aux_fuji_rating_already_applied(self, test_value, expected_value):
@@ -860,8 +1019,17 @@ class TestAux:
         assert isinstance(fuji_rating_already_applied, bool)
         assert fuji_rating_already_applied is expected_value
 
+        aux_dict = result.metadata.aux.to_dict()
+        assert aux_dict == {"FujiRatingAlreadyApplied": expected_value}
+
 
 class TestTiff:
+
+    def test_metadata_tiff_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        tiff_dict = result.metadata.tiff.to_dict()
+        assert tiff_dict == {}
 
     def test_metadata_tiff_make(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -884,6 +1052,9 @@ class TestTiff:
         assert isinstance(make, str)
         assert make == "Test Make"
 
+        tiff_dict = result.metadata.tiff.to_dict()
+        assert tiff_dict == {"Make": "Test Make"}
+
     def test_metadata_tiff_model(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
@@ -905,8 +1076,17 @@ class TestTiff:
         assert isinstance(model, str)
         assert model == "Test Model"
 
+        tiff_dict = result.metadata.tiff.to_dict()
+        assert tiff_dict == {"Model": "Test Model"}
+
 
 class TestExif:
+
+    def test_metadata_exif_to_dict(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {}
 
     def test_metadata_exif_resolution_unit(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -916,6 +1096,8 @@ class TestExif:
         resolution_unit = result.metadata.exif.ResolutionUnit
         assert isinstance(resolution_unit, int)
         assert resolution_unit == 2
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"ResolutionUnit": 2}
 
     def test_metadata_exif_exif_offset(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -925,6 +1107,8 @@ class TestExif:
         exif_offset = result.metadata.exif.ExifOffset
         assert isinstance(exif_offset, int)
         assert exif_offset == 2
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"ExifOffset": 2}
 
     def test_metadata_exif_image_description(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -934,6 +1118,8 @@ class TestExif:
         image_description = result.metadata.exif.ImageDescription
         assert isinstance(image_description, str)
         assert image_description == "Test Description"
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"ImageDescription": "Test Description"}
 
     def test_metadata_exif_make(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -943,6 +1129,8 @@ class TestExif:
         make = result.metadata.exif.Make
         assert isinstance(make, str)
         assert make == "Test Make"
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"Make": "Test Make"}
 
     def test_metadata_exif_model(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -952,6 +1140,8 @@ class TestExif:
         model = result.metadata.exif.Model
         assert isinstance(model, str)
         assert model == "Test Model"
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"Model": "Test Model"}
 
     def test_metadata_exif_software(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -961,6 +1151,8 @@ class TestExif:
         software = result.metadata.exif.Software
         assert isinstance(software, str)
         assert software == "Test Software"
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"Software": "Test Software"}
 
     def test_metadata_exif_orientation(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -970,6 +1162,8 @@ class TestExif:
         orientation = result.metadata.exif.Orientation
         assert isinstance(orientation, int)
         assert orientation == 1
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"Orientation": 1}
 
     def test_metadata_exif_date_time(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -979,6 +1173,8 @@ class TestExif:
         date_time = result.metadata.exif.DateTime
         assert isinstance(date_time, datetime)
         assert date_time == datetime(2026, 4, 20, 14, 15, 43)
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"DateTime": datetime(2026, 4, 20, 14, 15, 43)}
 
     def test_metadata_exif_date_time_original(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -988,6 +1184,8 @@ class TestExif:
         date_time_original = result.metadata.exif.DateTimeOriginal
         assert isinstance(date_time_original, datetime)
         assert date_time_original == datetime(2026, 4, 20, 14, 15, 43)
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"DateTimeOriginal": datetime(2026, 4, 20, 14, 15, 43)}
 
     def test_metadata_exif_y_resolution(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -997,6 +1195,8 @@ class TestExif:
         y_resolution = result.metadata.exif.YResolution
         assert isinstance(y_resolution, float)
         assert y_resolution == 300.0
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"YResolution": 300.0}
 
     def test_metadata_exif_copyright(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -1006,6 +1206,8 @@ class TestExif:
         exif_copyright = result.metadata.exif.Copyright
         assert isinstance(exif_copyright, str)
         assert exif_copyright == "Test Copyright"
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"Copyright": "Test Copyright"}
 
     def test_metadata_exif_x_resolution(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -1015,6 +1217,8 @@ class TestExif:
         x_resolution = result.metadata.exif.XResolution
         assert isinstance(x_resolution, float)
         assert x_resolution == 300.0
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"XResolution": 300.0}
 
     def test_metadata_exif_artist(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
@@ -1024,3 +1228,5 @@ class TestExif:
         artist = result.metadata.exif.Artist
         assert isinstance(artist, str)
         assert artist == "Test Artist Name"
+        exif_dict = result.metadata.exif.to_dict()
+        assert exif_dict == {"Artist": "Test Artist Name"}
