@@ -43,7 +43,7 @@ class Metadata:
     """
 
     pil_image: InitVar[Image.Image]
-    filename: str = field(default_factory=str, init=False)  # Store the filename for later use
+    filename: str | None = field(default=None, init=False)  # Store the filename for later use
     xmp_xml: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
     metadata: Schemas | None = None
 
