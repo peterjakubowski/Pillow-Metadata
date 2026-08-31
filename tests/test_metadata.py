@@ -1,9 +1,11 @@
+from datetime import datetime
+
+import pytest
+from lxml import etree
+from PIL import Image
+
 from src.pillow_metadata.metadata import Metadata
 from src.pillow_metadata.schemas import Schemas
-from PIL import Image
-from lxml import etree
-from datetime import datetime
-import pytest
 
 
 class TestMetadata:
@@ -40,16 +42,16 @@ class TestMetadata:
     def test_metadata_get_capture_date_xmp_create_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -82,16 +84,16 @@ class TestMetadata:
     def test_metadata_get_capture_date_photoshop_date_created(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
-            '   <photoshop:DateCreated>2026-04-20T16:20:00.00</photoshop:DateCreated>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            b'   <photoshop:DateCreated>2026-04-20T16:20:00.00</photoshop:DateCreated>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -126,16 +128,16 @@ class TestMetadata:
     def test_metadata_get_capture_date_string_xmp_create_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -144,32 +146,32 @@ class TestMetadata:
     def test_metadata_image_info(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/"\n'
-            '    xmlns:dc="http://purl.org/dc/elements/1.1/"\n'
-            '    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"\n'
-            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
-            '   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
-            '   <dc:description>\n'
-            '    <rdf:Alt>\n'
-            '     <rdf:li xml:lang="x-default">Test description</rdf:li>\n'
-            '    </rdf:Alt>\n'
-            '   </dc:description>\n'
-            '   <dc:subject>\n'
-            '    <rdf:Bag>\n'
-            '     <rdf:li>Test keyword</rdf:li>'
-            '    </rdf:Bag>\n'
-            '   </dc:subject>\n'
-            '   <Iptc4xmpCore:Location>Test location</Iptc4xmpCore:Location>\n'
-            '   <photoshop:City>Test city</photoshop:City>\n'
-            '   <photoshop:State>Test state</photoshop:State>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/"\n'
+            b'    xmlns:dc="http://purl.org/dc/elements/1.1/"\n'
+            b'    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"\n'
+            b'    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            b'   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
+            b'   <dc:description>\n'
+            b'    <rdf:Alt>\n'
+            b'     <rdf:li xml:lang="x-default">Test description</rdf:li>\n'
+            b'    </rdf:Alt>\n'
+            b'   </dc:description>\n'
+            b'   <dc:subject>\n'
+            b'    <rdf:Bag>\n'
+            b'     <rdf:li>Test keyword</rdf:li>'
+            b'    </rdf:Bag>\n'
+            b'   </dc:subject>\n'
+            b'   <Iptc4xmpCore:Location>Test location</Iptc4xmpCore:Location>\n'
+            b'   <photoshop:City>Test city</photoshop:City>\n'
+            b'   <photoshop:State>Test state</photoshop:State>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         expected_result = "\n".join(["Date Created: Monday, April 20, 2026",
                                      "Description: Test description",
