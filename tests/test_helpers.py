@@ -1,10 +1,12 @@
-from src.pillow_metadata.helpers import parse_xml, cast_datatype, build_exif_dictionary
-from src.pillow_metadata.schemas import Exif
-from lxml import etree
 from datetime import datetime
-from dateutil.parser import ParserError
-from PIL import Image
+
 import pytest
+from dateutil.parser import ParserError
+from lxml import etree
+from PIL import Image
+
+from src.pillow_metadata.helpers import build_exif_dictionary, cast_datatype, parse_xml
+from src.pillow_metadata.schemas import Exif
 
 
 class TestParseXML:
