@@ -1,7 +1,9 @@
-import pytest
-from src.pillow_metadata.metadata import Metadata
-from PIL import Image
 from datetime import datetime
+
+import pytest
+from PIL import Image
+
+from src.pillow_metadata.metadata import Metadata
 
 
 class TestXmp:
@@ -9,16 +11,16 @@ class TestXmp:
     def test_metadata_xmp_create_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:CreateDate>2026-04-20T16:20:00.00</xmp:CreateDate>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -30,16 +32,16 @@ class TestXmp:
     def test_metadata_xmp_creator_tool(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:CreatorTool>Test Creator Tool</xmp:CreatorTool>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:CreatorTool>Test Creator Tool</xmp:CreatorTool>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -51,20 +53,20 @@ class TestXmp:
     def test_metadata_xmp_identifier(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:Identifier>\n'
-            '    <rdf:Bag>\n'
-            '     <rdf:li>Test Identifier</rdf:li>'
-            '    </rdf:Bag>\n'
-            '   </xmp:Identifier>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:Identifier>\n'
+            b'    <rdf:Bag>\n'
+            b'     <rdf:li>Test Identifier</rdf:li>'
+            b'    </rdf:Bag>\n'
+            b'   </xmp:Identifier>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -76,16 +78,16 @@ class TestXmp:
     def test_metadata_xmp_label(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:Label>Test Label</xmp:Label>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:Label>Test Label</xmp:Label>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -97,16 +99,16 @@ class TestXmp:
     def test_metadata_xmp_metadata_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:MetadataDate>2026-04-20T16:20:00.00</xmp:MetadataDate>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:MetadataDate>2026-04-20T16:20:00.00</xmp:MetadataDate>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -118,16 +120,16 @@ class TestXmp:
     def test_metadata_xmp_modify_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:ModifyDate>2026-04-20T16:20:00.00</xmp:ModifyDate>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:ModifyDate>2026-04-20T16:20:00.00</xmp:ModifyDate>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -139,16 +141,16 @@ class TestXmp:
     def test_metadata_xmp_nickname(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:Nickname>Test Nickname</xmp:Nickname>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:Nickname>Test Nickname</xmp:Nickname>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -160,16 +162,16 @@ class TestXmp:
     def test_metadata_xmp_rating(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:Rating>5</xmp:Rating>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:Rating>5</xmp:Rating>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -181,16 +183,16 @@ class TestXmp:
     def test_metadata_xmp_rating_none(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '   <xmp:Rating></xmp:Rating>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
+            b'   <xmp:Rating></xmp:Rating>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -204,16 +206,16 @@ class TestXmpRights:
     def test_metadata_xmp_rights_certificate(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
-            '   <xmpRights:Certificate>Test Certificate</xmpRights:Certificate>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
+            b'   <xmpRights:Certificate>Test Certificate</xmpRights:Certificate>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -235,7 +237,7 @@ class TestXmpRights:
             '  </rdf:Description>\n'
             ' </rdf:RDF>\n'
             '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            '<?xpacket end="w"?>').encode()
 
         result = Metadata(pil_image=test_image)
 
@@ -247,20 +249,20 @@ class TestXmpRights:
     def test_metadata_xmp_rights_owner(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
-            '   <xmpRights:Owner>\n'
-            '    <rdf:Bag>\n'
-            '     <rdf:li>Test Owner</rdf:li>\n'
-            '    </rdf:Bag>\n'
-            '   </xmpRights:Owner>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
+            b'   <xmpRights:Owner>\n'
+            b'    <rdf:Bag>\n'
+            b'     <rdf:li>Test Owner</rdf:li>\n'
+            b'    </rdf:Bag>\n'
+            b'   </xmpRights:Owner>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -272,16 +274,16 @@ class TestXmpRights:
     def test_metadata_xmp_rights_usage_terms(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
-            '   <xmpRights:UsageTerms>Test Usage Terms</xmpRights:UsageTerms>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
+            b'   <xmpRights:UsageTerms>Test Usage Terms</xmpRights:UsageTerms>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -293,16 +295,16 @@ class TestXmpRights:
     def test_metadata_xmp_rights_web_statement(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
-            '   <xmpRights:WebStatement>Test Web Statement</xmpRights:WebStatement>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">\n'
+            b'   <xmpRights:WebStatement>Test Web Statement</xmpRights:WebStatement>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -317,16 +319,16 @@ class TestXmpMM:
     def test_metadata_xmp_mm_document_id(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">\n'
-            '   <xmpMM:DocumentID>Test Document ID</xmpMM:DocumentID>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">\n'
+            b'   <xmpMM:DocumentID>Test Document ID</xmpMM:DocumentID>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -338,16 +340,16 @@ class TestXmpMM:
     def test_metadata_xmp_mm_original_document_id(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">\n'
-            '   <xmpMM:OriginalDocumentID>Test Original Document ID</xmpMM:OriginalDocumentID>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">\n'
+            b'   <xmpMM:OriginalDocumentID>Test Original Document ID</xmpMM:OriginalDocumentID>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -359,16 +361,16 @@ class TestXmpMM:
     def test_metadata_xmp_mm_instance_id(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">\n'
-            '   <xmpMM:InstanceID>Test Instance ID</xmpMM:InstanceID>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">\n'
+            b'   <xmpMM:InstanceID>Test Instance ID</xmpMM:InstanceID>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -383,20 +385,20 @@ class TestIptc4XmpCore:
     def test_metadata_iptc_xmp_core_alt_text_accessibility(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">\n'
-            '   <Iptc4xmpCore:AltTextAccessibility>\n'
-            '    <rdf:Alt>\n'
-            '     <rdf:li xml:lang="x-default">Test Alt Text</rdf:li>\n'
-            '    </rdf:Alt>\n'
-            '   </Iptc4xmpCore:AltTextAccessibility>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">\n'
+            b'   <Iptc4xmpCore:AltTextAccessibility>\n'
+            b'    <rdf:Alt>\n'
+            b'     <rdf:li xml:lang="x-default">Test Alt Text</rdf:li>\n'
+            b'    </rdf:Alt>\n'
+            b'   </Iptc4xmpCore:AltTextAccessibility>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -408,16 +410,16 @@ class TestIptc4XmpCore:
     def test_metadata_iptc_xmp_core_location(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">\n'
-            '   <Iptc4xmpCore:Location>Test Location</Iptc4xmpCore:Location>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">\n'
+            b'   <Iptc4xmpCore:Location>Test Location</Iptc4xmpCore:Location>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -429,16 +431,16 @@ class TestIptc4XmpCore:
     def test_metadata_iptc_xmp_core_country_code(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">\n'
-            '   <Iptc4xmpCore:CountryCode>Test Country Code</Iptc4xmpCore:CountryCode>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">\n'
+            b'   <Iptc4xmpCore:CountryCode>Test Country Code</Iptc4xmpCore:CountryCode>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -453,20 +455,20 @@ class TestIptc4XmpExt:
     def test_metadata_iptc_xmp_ext_person_in_image(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:Iptc4xmpExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/">\n'
-            '   <Iptc4xmpExt:PersonInImage>\n'
-            '    <rdf:Bag>\n'
-            '     <rdf:li>Test Name</rdf:li>\n'
-            '    </rdf:Bag>\n'
-            '   </Iptc4xmpExt:PersonInImage>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:Iptc4xmpExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/">\n'
+            b'   <Iptc4xmpExt:PersonInImage>\n'
+            b'    <rdf:Bag>\n'
+            b'     <rdf:li>Test Name</rdf:li>\n'
+            b'    </rdf:Bag>\n'
+            b'   </Iptc4xmpExt:PersonInImage>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -481,16 +483,16 @@ class TestPhotoshop:
     def test_metadata_photoshop_date_created(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
-            '   <photoshop:DateCreated>2026-04-20T16:20:00.00</photoshop:DateCreated>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            b'   <photoshop:DateCreated>2026-04-20T16:20:00.00</photoshop:DateCreated>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -502,16 +504,16 @@ class TestPhotoshop:
     def test_metadata_photoshop_urgency(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
-            '   <photoshop:Urgency>5</photoshop:Urgency>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            b'   <photoshop:Urgency>5</photoshop:Urgency>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -523,16 +525,16 @@ class TestPhotoshop:
     def test_metadata_photoshop_city(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
-            '   <photoshop:City>Test City</photoshop:City>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            b'   <photoshop:City>Test City</photoshop:City>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -544,16 +546,16 @@ class TestPhotoshop:
     def test_metadata_photoshop_state(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
-            '   <photoshop:State>Test State</photoshop:State>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            b'   <photoshop:State>Test State</photoshop:State>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -565,16 +567,16 @@ class TestPhotoshop:
     def test_metadata_photoshop_transmission_reference(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
-            '   <photoshop:TransmissionReference>Test Transmission Reference</photoshop:TransmissionReference>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/">\n'
+            b'   <photoshop:TransmissionReference>Test Transmission Reference</photoshop:TransmissionReference>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(pil_image=test_image)
 
@@ -589,20 +591,20 @@ class TestDc:
     def test_metadata_dc_creator(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
-            '   <dc:creator>\n'
-            '    <rdf:Bag>\n'
-            '     <rdf:li>Test Name</rdf:li>\n'
-            '    </rdf:Bag>\n'
-            '   </dc:creator>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+            b'   <dc:creator>\n'
+            b'    <rdf:Bag>\n'
+            b'     <rdf:li>Test Name</rdf:li>\n'
+            b'    </rdf:Bag>\n'
+            b'   </dc:creator>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -614,20 +616,20 @@ class TestDc:
     def test_metadata_dc_description(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
-            '   <dc:description>\n'
-            '    <rdf:Alt>\n'
-            '     <rdf:li xml:lang="x-default">Test Description</rdf:li>\n'
-            '    </rdf:Alt>\n'
-            '   </dc:description>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+            b'   <dc:description>\n'
+            b'    <rdf:Alt>\n'
+            b'     <rdf:li xml:lang="x-default">Test Description</rdf:li>\n'
+            b'    </rdf:Alt>\n'
+            b'   </dc:description>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -639,16 +641,16 @@ class TestDc:
     def test_metadata_dc_format(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
-            '   <dc:format>Test Format</dc:format>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+            b'   <dc:format>Test Format</dc:format>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -660,20 +662,20 @@ class TestDc:
     def test_metadata_dc_rights(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
-            '   <dc:rights>\n'
-            '    <rdf:Alt>\n'
-            '     <rdf:li xml:lang="x-default">Test Rights</rdf:li>\n'
-            '    </rdf:Alt>\n'
-            '   </dc:rights>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+            b'   <dc:rights>\n'
+            b'    <rdf:Alt>\n'
+            b'     <rdf:li xml:lang="x-default">Test Rights</rdf:li>\n'
+            b'    </rdf:Alt>\n'
+            b'   </dc:rights>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -685,20 +687,20 @@ class TestDc:
     def test_metadata_dc_subject(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
-            '   <dc:subject>\n'
-            '    <rdf:Bag>\n'
-            '     <rdf:li>Test Subject</rdf:li>\n'
-            '    </rdf:Bag>\n'
-            '   </dc:subject>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+            b'   <dc:subject>\n'
+            b'    <rdf:Bag>\n'
+            b'     <rdf:li>Test Subject</rdf:li>\n'
+            b'    </rdf:Bag>\n'
+            b'   </dc:subject>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -710,16 +712,16 @@ class TestDc:
     def test_metadata_dc_title(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
-            '   <dc:title>Test Title</dc:title>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+            b'   <dc:title>Test Title</dc:title>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -734,16 +736,16 @@ class TestAux:
     def test_metadata_aux_serial_number(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
-            '   <aux:SerialNumber>Test Serial Number</aux:SerialNumber>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
+            b'   <aux:SerialNumber>Test Serial Number</aux:SerialNumber>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -755,16 +757,16 @@ class TestAux:
     def test_metadata_aux_lens_info(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
-            '   <aux:LensInfo>Test Lens Info</aux:LensInfo>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
+            b'   <aux:LensInfo>Test Lens Info</aux:LensInfo>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -776,16 +778,16 @@ class TestAux:
     def test_metadata_aux_lens(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
-            '   <aux:Lens>Test Lens</aux:Lens>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
+            b'   <aux:Lens>Test Lens</aux:Lens>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -797,16 +799,16 @@ class TestAux:
     def test_metadata_aux_lens_serial_number(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
-            '   <aux:LensSerialNumber>Test Lens Serial Number</aux:LensSerialNumber>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
+            b'   <aux:LensSerialNumber>Test Lens Serial Number</aux:LensSerialNumber>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -818,16 +820,16 @@ class TestAux:
     def test_metadata_aux_flash_compensation(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
-            '   <aux:FlashCompensation>Test Flash Compensation</aux:FlashCompensation>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:aux="http://ns.adobe.com/exif/1.0/aux/">\n'
+            b'   <aux:FlashCompensation>Test Flash Compensation</aux:FlashCompensation>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -849,7 +851,7 @@ class TestAux:
             '  </rdf:Description>\n'
             ' </rdf:RDF>\n'
             '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            '<?xpacket end="w"?>').encode()
 
         result = Metadata(test_image)
 
@@ -864,16 +866,16 @@ class TestTiff:
     def test_metadata_tiff_make(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:tiff="http://ns.adobe.com/tiff/1.0/">\n'
-            '   <tiff:Make>Test Make</tiff:Make>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:tiff="http://ns.adobe.com/tiff/1.0/">\n'
+            b'   <tiff:Make>Test Make</tiff:Make>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
@@ -885,16 +887,16 @@ class TestTiff:
     def test_metadata_tiff_model(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
-            '<?xpacket begin="" id=""?>\n'
-            '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
-            ' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '  <rdf:Description rdf:about=""\n'
-            '    xmlns:tiff="http://ns.adobe.com/tiff/1.0/">\n'
-            '   <tiff:Model>Test Model</tiff:Model>\n'
-            '  </rdf:Description>\n'
-            ' </rdf:RDF>\n'
-            '</x:xmpmeta>\n'
-            '<?xpacket end="w"?>').encode("utf-8")
+            b'<?xpacket begin="" id=""?>\n'
+            b'<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 7.0">\n'
+            b' <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
+            b'  <rdf:Description rdf:about=""\n'
+            b'    xmlns:tiff="http://ns.adobe.com/tiff/1.0/">\n'
+            b'   <tiff:Model>Test Model</tiff:Model>\n'
+            b'  </rdf:Description>\n'
+            b' </rdf:RDF>\n'
+            b'</x:xmpmeta>\n'
+            b'<?xpacket end="w"?>')
 
         result = Metadata(test_image)
 
