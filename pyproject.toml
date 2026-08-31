@@ -7,7 +7,7 @@ authors = [
 description = "Python class that transforms XMP and Exif metadata into a standardized Python dataclass data structure from a Pillow (PIL) source image."
 readme = {file = "README.md", content-type = "text/markdown"}
 license = {file = "LICENSE"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "lxml",
     "Pillow",
@@ -17,3 +17,6 @@ dependencies = [
 [project.urls]
 HomePage = "https://github.com/peterjakubowski/Pillow-Metadata"
 Issues = "https://github.com/peterjakubowski/Pillow-Metadata/issues"
+
+[tool.ruff.lint]
+select = ["DTZ011"]
