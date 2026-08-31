@@ -15,6 +15,8 @@ from dateutil.parser import ParserError
 from lxml import etree
 from PIL import Image
 
+logger = logging.getLogger(__name__)
+
 # ========================
 # === Helper Functions ===
 # ========================
@@ -33,7 +35,7 @@ def parse_xml(_xmp_xml_byte_string: bytes) -> etree._ElementTree:
         _xmp_xml_etree = etree.ElementTree(etree.fromstring(_xmp_xml_string))
 
     except etree.XMLSyntaxError as xse:
-        logging.error(f'Syntax Error: {xse}')
+        logger.error(f'Syntax Error: {xse}')
         raise TypeError("Syntax Error")
 
     return _xmp_xml_etree
@@ -50,23 +52,23 @@ def cast_datatype(_value: Any, _data_type: Any) -> str | datetime | int | float 
             _value = str(_value).replace(":", "")
             _value = dateutil.parser.parse(timestr=_value, default=None, fuzzy=True)
         except ParserError as pe:
-            logging.error(f'Error parsing date string to datetime: {pe}')
+            logger.error(f'Error parsing date string to datetime: {pe}')
             raise ParserError
         except OverflowError as oe:
-            logging.error(f'Overflow error when parsing date string to datetime: {oe}')
+            logger.error(f'Overflow error when parsing date string to datetime: {oe}')
 
     elif _data_type is int:
         try:
             _value = int(float(_value))
         except ValueError as ve:
-            logging.error(f'Error converting value to integer: {ve}')
+            logger.error(f'Error converting value to integer: {ve}')
             raise ValueError("Error converting value to integer")
 
     elif _data_type is float:
         try:
             _value = float(_value)
         except ValueError as ve:
-            logging.error(f'Error converting value to float: {ve}')
+            logger.error(f'Error converting value to float: {ve}')
             raise ValueError('Error converting value to float')
 
     elif _data_type is bool:
@@ -82,7 +84,7 @@ def cast_datatype(_value: Any, _data_type: Any) -> str | datetime | int | float 
         try:
             _value = bool_map[str(_value).lower()]
         except KeyError as exc:
-            logging.error(f'Error converting value to bool: {exc}')
+            logger.error(f'Error converting value to bool: {exc}')
             raise KeyError('Error converting value to bool')
 
     return _value
@@ -104,7 +106,7 @@ def build_exif_dictionary(_exif: Image.Exif, _exif_object: object):
                 try:
                     value = cast_datatype(_value=value, _data_type=data_type)
                 except (TypeError, ValueError, KeyError, ParserError):
-                    logging.error(f'Failed to cast metadata value: "{value}"')
+                    logger.error(f'Failed to cast metadata value: "{value}"')
 
             _exif_object.__setattr__(exif_tag, value)
 
