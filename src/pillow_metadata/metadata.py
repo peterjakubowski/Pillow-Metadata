@@ -9,7 +9,7 @@
 import logging
 from collections import deque
 from dataclasses import InitVar, dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from lxml import etree
@@ -17,6 +17,8 @@ from PIL import Image
 
 from .helpers import build_exif_dictionary, parse_xml
 from .schemas import Exif, Schemas
+
+logger = logging.getLogger(__name__)
 
 # ========================
 # ==== Metadata Class ====
@@ -61,7 +63,7 @@ class Metadata:
         try:
             self.xmp_xml = parse_xml(pil_image.info.get('xmp', b'<?xpacket ?><root></root>'))
         except TypeError as te:
-            logging.error(f"Type Error: {te}")
+            logger.error(f"Type Error: {te}")
             raise TypeError
         finally:
             self.metadata = Schemas(xml_tree=self.xmp_xml)
@@ -87,7 +89,7 @@ class Metadata:
         if self.filename and Path(self.filename).is_file():
             stat_res = Path(self.filename).stat()
             mtime = getattr(stat_res, 'st_birthtime', stat_res.st_mtime)
-            date = datetime.fromtimestamp(mtime)
+            date = datetime.fromtimestamp(mtime, tz=timezone.utc)
             return date
 
         return None
