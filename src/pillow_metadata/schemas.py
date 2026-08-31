@@ -78,7 +78,9 @@ class XPath:
                 else:
                     ele = xml.find(f".//{NS_MAP.get('rdf')}Description")
                     if ele is not None and ele.attrib:
-                        value = str(ele.attrib.get(self.tag, None)).strip()
+                        attrib_value = ele.attrib.get(self.tag, None)
+                        if attrib_value:
+                            value = str(attrib_value).strip()
 
             elif self.datatype == 'bag':
                 if ele is not None and len(ele) == 1:
@@ -162,14 +164,15 @@ class Xmp(Xml):
      """
 
     # XMP properties
-    CreateDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'CreateDate'}", xmp_data_type='text')
-    CreatorTool: str = XPath(tag=f"{NS_MAP['xmp']}{'CreatorTool'}", xmp_data_type='text')
-    Identifier: list = XPath(tag=f"{NS_MAP['xmp']}{'Identifier'}", xmp_data_type='bag')
-    Label: str = XPath(tag=f"{NS_MAP['xmp']}{'Label'}", xmp_data_type='text')
-    MetadataDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'MetadataDate'}", xmp_data_type='text')
-    ModifyDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'ModifyDate'}", xmp_data_type='text')
-    Nickname: str = XPath(tag=f"{NS_MAP['xmp']}{'Nickname'}", xmp_data_type='text')
-    Rating: int = XPath(tag=f"{NS_MAP['xmp']}{'Rating'}", xmp_data_type='text')
+    CreateDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'CreateDate'}", xmp_data_type='text')  # type: ignore[assignment]
+    CreatorTool: str = XPath(tag=f"{NS_MAP['xmp']}{'CreatorTool'}", xmp_data_type='text')  # type: ignore[assignment]
+    Identifier: list = XPath(tag=f"{NS_MAP['xmp']}{'Identifier'}", xmp_data_type='bag')  # type: ignore[assignment]
+    Label: str = XPath(tag=f"{NS_MAP['xmp']}{'Label'}", xmp_data_type='text')  # type: ignore[assignment]
+    MetadataDate: datetime = XPath(
+        tag=f"{NS_MAP['xmp']}{'MetadataDate'}", xmp_data_type='text')  # type: ignore[assignment]
+    ModifyDate: datetime = XPath(tag=f"{NS_MAP['xmp']}{'ModifyDate'}", xmp_data_type='text')  # type: ignore[assignment]
+    Nickname: str = XPath(tag=f"{NS_MAP['xmp']}{'Nickname'}", xmp_data_type='text')  # type: ignore[assignment]
+    Rating: int = XPath(tag=f"{NS_MAP['xmp']}{'Rating'}", xmp_data_type='text')  # type: ignore[assignment]
     # Thumbnails: list = None  # An alternative array of thumbnail images for a file
 
 
@@ -194,11 +197,14 @@ class XmpRights(Xml):
     """
 
     # XMPRights properties
-    Certificate: str = XPath(tag=f"{NS_MAP['xmpRights']}{'Certificate'}", xmp_data_type='text')
-    Marked: bool = XPath(tag=f"{NS_MAP['xmpRights']}{'Marked'}", xmp_data_type='text')
-    Owner: list = XPath(tag=f"{NS_MAP['xmpRights']}{'Owner'}", xmp_data_type='bag')
-    UsageTerms: str = XPath(tag=f"{NS_MAP['xmpRights']}{'UsageTerms'}", xmp_data_type='text')
-    WebStatement: str = XPath(tag=f"{NS_MAP['xmpRights']}{'WebStatement'}", xmp_data_type='text')
+    Certificate: str = XPath(
+        tag=f"{NS_MAP['xmpRights']}{'Certificate'}", xmp_data_type='text')  # type: ignore[assignment]
+    Marked: bool = XPath(tag=f"{NS_MAP['xmpRights']}{'Marked'}", xmp_data_type='text')  # type: ignore[assignment]
+    Owner: list = XPath(tag=f"{NS_MAP['xmpRights']}{'Owner'}", xmp_data_type='bag')  # type: ignore[assignment]
+    UsageTerms: str = XPath(
+        tag=f"{NS_MAP['xmpRights']}{'UsageTerms'}", xmp_data_type='text')  # type: ignore[assignment]
+    WebStatement: str = XPath(
+        tag=f"{NS_MAP['xmpRights']}{'WebStatement'}", xmp_data_type='text')  # type: ignore[assignment]
 
 
 class XmpMM(Xml):
@@ -221,9 +227,10 @@ class XmpMM(Xml):
 
     # XmpMM properties
     # ID type should be GUID
-    DocumentID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'DocumentID'}", xmp_data_type='text')
-    OriginalDocumentID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'OriginalDocumentID'}", xmp_data_type='text')
-    InstanceID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'InstanceID'}", xmp_data_type='text')
+    DocumentID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'DocumentID'}", xmp_data_type='text')  # type: ignore[assignment]
+    OriginalDocumentID: str = XPath(
+        tag=f"{NS_MAP['xmpMM']}{'OriginalDocumentID'}", xmp_data_type='text')  # type: ignore[assignment]
+    InstanceID: str = XPath(tag=f"{NS_MAP['xmpMM']}{'InstanceID'}", xmp_data_type='text')  # type: ignore[assignment]
     # History: list = XPath(tag=f"{NS_MAP['xmpMM']}{'History'}", xmp_data_type='bag')  # ordered array
 
 
@@ -247,9 +254,12 @@ class Iptc4XmpCore(Xml):
 
     # Iptc4XmpCore properties
     # CreatorContactInfo: object = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'CreatorContactInfo'}", xmp_data_type='text')
-    AltTextAccessibility: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'AltTextAccessibility'}", xmp_data_type='alt')
-    Location: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'Location'}", xmp_data_type='text')
-    CountryCode: str = XPath(tag=f"{NS_MAP['Iptc4xmpCore']}{'CountryCode'}", xmp_data_type='text')
+    AltTextAccessibility: str = XPath(
+        tag=f"{NS_MAP['Iptc4xmpCore']}{'AltTextAccessibility'}", xmp_data_type='alt')  # type: ignore[assignment]
+    Location: str = XPath(
+        tag=f"{NS_MAP['Iptc4xmpCore']}{'Location'}", xmp_data_type='text')  # type: ignore[assignment]
+    CountryCode: str = XPath(
+        tag=f"{NS_MAP['Iptc4xmpCore']}{'CountryCode'}", xmp_data_type='text')  # type: ignore[assignment]
 
 
 class Iptc4XmpExt(Xml):
@@ -268,7 +278,8 @@ class Iptc4XmpExt(Xml):
     """
 
     # Iptc4XmpExt properties
-    PersonInImage: list = XPath(tag=f"{NS_MAP['Iptc4xmpExt']}{'PersonInImage'}", xmp_data_type='bag')
+    PersonInImage: list = XPath(
+        tag=f"{NS_MAP['Iptc4xmpExt']}{'PersonInImage'}", xmp_data_type='bag')  # type: ignore[assignment]
 
 
 class Photoshop(Xml):
@@ -291,11 +302,13 @@ class Photoshop(Xml):
     """
 
     # Photoshop properties
-    DateCreated: datetime = XPath(tag=f"{NS_MAP['photoshop']}{'DateCreated'}", xmp_data_type='text')
-    Urgency: int = XPath(tag=f"{NS_MAP['photoshop']}{'Urgency'}", xmp_data_type='text')
-    City: str = XPath(tag=f"{NS_MAP['photoshop']}{'City'}", xmp_data_type='text')
-    State: str = XPath(tag=f"{NS_MAP['photoshop']}{'State'}", xmp_data_type='text')
-    TransmissionReference: str = XPath(tag=f"{NS_MAP['photoshop']}{'TransmissionReference'}", xmp_data_type='text')
+    DateCreated: datetime = XPath(
+        tag=f"{NS_MAP['photoshop']}{'DateCreated'}", xmp_data_type='text')  # type: ignore[assignment]
+    Urgency: int = XPath(tag=f"{NS_MAP['photoshop']}{'Urgency'}", xmp_data_type='text')  # type: ignore[assignment]
+    City: str = XPath(tag=f"{NS_MAP['photoshop']}{'City'}", xmp_data_type='text')  # type: ignore[assignment]
+    State: str = XPath(tag=f"{NS_MAP['photoshop']}{'State'}", xmp_data_type='text')  # type: ignore[assignment]
+    TransmissionReference: str = XPath(
+        tag=f"{NS_MAP['photoshop']}{'TransmissionReference'}", xmp_data_type='text')  # type: ignore[assignment]
 
 
 class Dc(Xml):
@@ -321,12 +334,12 @@ class Dc(Xml):
     """
 
     # DC properties
-    creator: list = XPath(tag=f"{NS_MAP['dc']}{'creator'}", xmp_data_type='bag')
-    description: str = XPath(tag=f"{NS_MAP['dc']}{'description'}", xmp_data_type='alt')
-    format: str = XPath(tag=f"{NS_MAP['dc']}{'format'}", xmp_data_type='text')
-    rights: str = XPath(tag=f"{NS_MAP['dc']}{'rights'}", xmp_data_type='alt')
-    subject: list = XPath(tag=f"{NS_MAP['dc']}{'subject'}", xmp_data_type='bag')
-    title: str = XPath(tag=f"{NS_MAP['dc']}{'title'}", xmp_data_type='text')
+    creator: list = XPath(tag=f"{NS_MAP['dc']}{'creator'}", xmp_data_type='bag')  # type: ignore[assignment]
+    description: str = XPath(tag=f"{NS_MAP['dc']}{'description'}", xmp_data_type='alt')  # type: ignore[assignment]
+    format: str = XPath(tag=f"{NS_MAP['dc']}{'format'}", xmp_data_type='text')  # type: ignore[assignment]
+    rights: str = XPath(tag=f"{NS_MAP['dc']}{'rights'}", xmp_data_type='alt')  # type: ignore[assignment]
+    subject: list = XPath(tag=f"{NS_MAP['dc']}{'subject'}", xmp_data_type='bag')  # type: ignore[assignment]
+    title: str = XPath(tag=f"{NS_MAP['dc']}{'title'}", xmp_data_type='text')  # type: ignore[assignment]
 
 
 class Aux(Xml):
@@ -343,12 +356,15 @@ class Aux(Xml):
     """
 
     # Aux properties
-    SerialNumber: str = XPath(tag=f"{NS_MAP['aux']}{'SerialNumber'}", xmp_data_type='text')
-    LensInfo: str = XPath(tag=f"{NS_MAP['aux']}{'LensInfo'}", xmp_data_type='text')
-    Lens: str = XPath(tag=f"{NS_MAP['aux']}{'Lens'}", xmp_data_type='text')
-    LensSerialNumber: str = XPath(tag=f"{NS_MAP['aux']}{'LensSerialNumber'}", xmp_data_type='text')
-    FlashCompensation: str = XPath(tag=f"{NS_MAP['aux']}{'FlashCompensation'}", xmp_data_type='text')
-    FujiRatingAlreadyApplied: bool = XPath(tag=f"{NS_MAP['aux']}{'FujiRatingAlreadyApplied'}", xmp_data_type='text')
+    SerialNumber: str = XPath(tag=f"{NS_MAP['aux']}{'SerialNumber'}", xmp_data_type='text')  # type: ignore[assignment]
+    LensInfo: str = XPath(tag=f"{NS_MAP['aux']}{'LensInfo'}", xmp_data_type='text')  # type: ignore[assignment]
+    Lens: str = XPath(tag=f"{NS_MAP['aux']}{'Lens'}", xmp_data_type='text')  # type: ignore[assignment]
+    LensSerialNumber: str = XPath(
+        tag=f"{NS_MAP['aux']}{'LensSerialNumber'}", xmp_data_type='text')  # type: ignore[assignment]
+    FlashCompensation: str = XPath(
+        tag=f"{NS_MAP['aux']}{'FlashCompensation'}", xmp_data_type='text')  # type: ignore[assignment]
+    FujiRatingAlreadyApplied: bool = XPath(
+        tag=f"{NS_MAP['aux']}{'FujiRatingAlreadyApplied'}", xmp_data_type='text')  # type: ignore[assignment]
 
 
 class Tiff(Xml):
@@ -370,8 +386,8 @@ class Tiff(Xml):
 
     # Tiff properties
     # Artist: str = XPath(tag=f"{NS_MAP['tiff']}{'Artist'}", xmp_data_type='text')
-    Make: str = XPath(tag=f"{NS_MAP['tiff']}{'Make'}", xmp_data_type='text')
-    Model: str = XPath(tag=f"{NS_MAP['tiff']}{'Model'}", xmp_data_type='text')
+    Make: str = XPath(tag=f"{NS_MAP['tiff']}{'Make'}", xmp_data_type='text')  # type: ignore[assignment]
+    Model: str = XPath(tag=f"{NS_MAP['tiff']}{'Model'}", xmp_data_type='text')  # type: ignore[assignment]
 
 
 @dataclass
@@ -402,19 +418,19 @@ class Exif:
     """
 
     # Exif properties
-    ResolutionUnit: int = None
-    ExifOffset: int = None
-    ImageDescription: str = None
-    Make: str = None
-    Model: str = None
-    Software: str = None
-    Orientation: int = None
-    DateTime: datetime = None
-    DateTimeOriginal: datetime = None
-    YResolution: float = None
-    Copyright: str = None
-    XResolution: float = None
-    Artist: str = None
+    ResolutionUnit: int = None  # type: ignore[assignment]
+    ExifOffset: int = None  # type: ignore[assignment]
+    ImageDescription: str = None  # type: ignore[assignment]
+    Make: str = None  # type: ignore[assignment]
+    Model: str = None  # type: ignore[assignment]
+    Software: str = None  # type: ignore[assignment]
+    Orientation: int = None  # type: ignore[assignment]
+    DateTime: datetime = None  # type: ignore[assignment]
+    DateTimeOriginal: datetime = None  # type: ignore[assignment]
+    YResolution: float = None  # type: ignore[assignment]
+    Copyright: str = None  # type: ignore[assignment]
+    XResolution: float = None  # type: ignore[assignment]
+    Artist: str = None  # type: ignore[assignment]
 
 
 @dataclass
@@ -442,15 +458,15 @@ class Schemas:
 
     """
     xml_tree: InitVar[etree._ElementTree]
-    xmp: Xmp = field(default=Xmp)
-    xmpRights: XmpRights = field(default=XmpRights)
-    xmpMM: XmpMM = field(default=XmpMM)
-    Iptc4xmpCore: Iptc4XmpCore = field(default=Iptc4XmpCore)
-    Iptc4xmpExt: Iptc4XmpExt = field(default=Iptc4XmpExt)
-    photoshop: Photoshop = field(default=Photoshop)
-    dc: Dc = field(default=Dc)
-    aux: Aux = field(default=Aux)
-    tiff: Tiff = field(default=Tiff)
+    xmp: Xmp = field(init=False)
+    xmpRights: XmpRights = field(init=False)
+    xmpMM: XmpMM = field(init=False)
+    Iptc4xmpCore: Iptc4XmpCore = field(init=False)
+    Iptc4xmpExt: Iptc4XmpExt = field(init=False)
+    photoshop: Photoshop = field(init=False)
+    dc: Dc = field(init=False)
+    aux: Aux = field(init=False)
+    tiff: Tiff = field(init=False)
     exif: Exif = field(default_factory=Exif)
 
     def __post_init__(self, xml_tree: etree._ElementTree):
