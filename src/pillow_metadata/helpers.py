@@ -8,9 +8,10 @@
 
 import logging
 from datetime import datetime
+from typing import Any
+
 import dateutil.parser
 from dateutil.parser import ParserError
-from typing import Any
 from lxml import etree
 from PIL import Image
 
@@ -19,22 +20,23 @@ from PIL import Image
 # ========================
 
 
-def parse_xml(_xmp_xml: bytes) -> etree._ElementTree:
+def parse_xml(_xmp_xml_byte_string: bytes) -> etree._ElementTree:
     """
     Parses the raw XMP packet XML and returns it as an ElementTree using lxml.
 
-    :param _xmp_xml: Raw XMP pack as a byte string
+    :param _xmp_xml_byte_string: Raw XMP pack as a byte string
     :return: XMP metadata as an XML ElementTree
     """
 
     try:
-        _xmp_xml = etree.ElementTree(etree.fromstring(_xmp_xml.decode()))
+        _xmp_xml_string = _xmp_xml_byte_string.decode()
+        _xmp_xml_etree = etree.ElementTree(etree.fromstring(_xmp_xml_string))
 
     except etree.XMLSyntaxError as xse:
         logging.error(f'Syntax Error: {xse}')
         raise TypeError("Syntax Error")
 
-    return _xmp_xml
+    return _xmp_xml_etree
 
 
 def cast_datatype(_value: Any, _data_type: Any) -> str | datetime | int | float | bool:
@@ -65,7 +67,7 @@ def cast_datatype(_value: Any, _data_type: Any) -> str | datetime | int | float 
             _value = float(_value)
         except ValueError as ve:
             logging.error(f'Error converting value to float: {ve}')
-            raise ValueError(f'Error converting value to float')
+            raise ValueError('Error converting value to float')
 
     elif _data_type is bool:
         bool_map = {
