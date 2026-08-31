@@ -39,6 +39,26 @@ class TestMetadata:
 
         assert isinstance(result.xmp_xml, etree._ElementTree)
 
+    def test_metadata_filename_is_none(self):
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        result = Metadata(pil_image=test_image)
+        filename = result.filename
+        assert filename is None
+
+    def test_metadata_filename_is_string(self, tmp_path):
+        temp_image_path = tmp_path / "test_image_no_meta.jpg"
+        test_image = Image.new(mode="RGB", size=(100, 100), color="black")
+        test_image.save(temp_image_path)
+        try:
+            with Image.open(temp_image_path) as img:
+                result = Metadata(pil_image=img)
+                filename = result.filename
+                assert isinstance(filename, str)
+                assert filename == str(temp_image_path)
+        finally:
+            if temp_image_path.exists():
+                temp_image_path.unlink()
+
     def test_metadata_get_capture_date_xmp_create_date(self):
         test_image = Image.new(mode="RGB", size=(100, 100), color="black")
         test_image.info['xmp'] = (
