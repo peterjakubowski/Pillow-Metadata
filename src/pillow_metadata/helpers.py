@@ -41,13 +41,16 @@ def parse_xml(_xmp_xml_byte_string: bytes) -> etree._ElementTree:
     return _xmp_xml_etree
 
 
-def cast_datatype(_value: Any, _data_type: Any) -> str | datetime | int | float | bool:
+def cast_datatype(_value: Any, _data_type: Any) -> str | datetime | int | float | bool | None:
     """
 
     :return:
     """
 
-    if _data_type is datetime:
+    if _value is None:
+        return None
+
+    elif _data_type is datetime:
         try:
             _value = str(_value).replace(":", "")
             _value = dateutil.parser.parse(timestr=_value, default=None, fuzzy=True)
