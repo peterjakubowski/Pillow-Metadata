@@ -139,6 +139,19 @@ class Xml:
         if not isinstance(self._xml_tree, etree._ElementTree):
             raise TypeError(f'xml_tree expected type ElementTree, got {type(self._xml_tree)} instead.')
 
+    def to_dict(self, include_none: bool = False) -> dict:
+        data = {}
+        for attr in getattr(self, '__annotations__', {}):
+            if attr.startswith('_'):
+                continue
+            val = getattr(self, attr, None)
+            if include_none or val is not None:
+                data[attr] = val
+        return data
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.to_dict()})"
+
 
 class Xmp(Xml):
     """
@@ -432,6 +445,19 @@ class Exif:
     XResolution: float = None  # type: ignore[assignment]
     Artist: str = None  # type: ignore[assignment]
 
+    def to_dict(self, include_none: bool = False) -> dict:
+        data = {}
+        for attr in getattr(self, '__annotations__', {}):
+            if attr.startswith('_'):
+                continue
+            val = getattr(self, attr, None)
+            if include_none or val is not None:
+                data[attr] = val
+        return data
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.to_dict()})"
+
 
 @dataclass
 class Schemas:
@@ -479,3 +505,17 @@ class Schemas:
         self.dc = Dc(_xml_tree=xml_tree)
         self.aux = Aux(_xml_tree=xml_tree)
         self.tiff = Tiff(_xml_tree=xml_tree)
+
+    def to_dict(self, include_none: bool = False) -> dict:
+        res = {}
+        for name in NS_MAP.keys():
+            schema_obj = getattr(self, name, None)
+            if schema_obj and hasattr(schema_obj, 'to_dict'):
+                schema_dict = schema_obj.to_dict(include_none=include_none)
+                if include_none or schema_dict:
+                    res[name] = schema_dict
+
+        return res
+
+    def __repr__(self) -> str:
+        return f"{self.to_dict()}"
