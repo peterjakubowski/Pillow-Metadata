@@ -7,15 +7,16 @@
 #
 
 import logging
-from dataclasses import dataclass, InitVar, field
-from typing import AnyStr
-from lxml import etree
 from collections import deque
-from PIL import Image
+from dataclasses import InitVar, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from .schemas import Schemas, Exif
-from .helpers import parse_xml, build_exif_dictionary
+
+from lxml import etree
+from PIL import Image
+
+from .helpers import build_exif_dictionary, parse_xml
+from .schemas import Exif, Schemas
 
 # ========================
 # ==== Metadata Class ====
@@ -40,9 +41,9 @@ class Metadata:
     """
 
     pil_image: InitVar[Image.Image]
-    filename: AnyStr = field(default_factory=str, init=False)  # Store the filename for later use
+    filename: str = field(default_factory=str, init=False)  # Store the filename for later use
     xmp_xml: etree._ElementTree = field(default_factory=etree._ElementTree, init=False)  # Keep the raw XMP data as XML
-    metadata: Schemas = None
+    metadata: Schemas | None = None
 
     def __post_init__(self, pil_image: Image.Image) -> None:
         """
@@ -91,7 +92,7 @@ class Metadata:
 
         return None
 
-    def get_capture_date_string(self) -> str:
+    def get_capture_date_string(self) -> str | None:
         """
         Formats the capture date as '%A, %B %d, %Y'
 
@@ -100,6 +101,8 @@ class Metadata:
 
         if capture_date := self.get_capture_date():
             return capture_date.strftime('%A, %B %d, %Y')
+
+        return None
 
     def image_info(self) -> str:
         """
@@ -113,10 +116,10 @@ class Metadata:
         if capture_date := self.get_capture_date_string():
             info.append("Date Created: " + capture_date)
         # Get the image description
-        if description := self.metadata.dc.description:
+        if description := self.metadata.dc.description if self.metadata else None:
             info.append("Description: " + description)
         # Get keywords
-        if keywords := self.metadata.dc.subject:
+        if keywords := self.metadata.dc.subject if self.metadata else None:
             info.append("Keywords: " + ", ".join(keywords))
         # Get location data
         location = []
