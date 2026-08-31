@@ -7,13 +7,14 @@
 #
 
 import logging
-from dataclasses import dataclass, field, InitVar
+from dataclasses import InitVar, dataclass, field
 from datetime import datetime
-from lxml import etree
 from typing import Any, Literal
-from .helpers import cast_datatype
-from dateutil.parser import ParserError
 
+from dateutil.parser import ParserError
+from lxml import etree
+
+from .helpers import cast_datatype
 
 # =======================
 # ==== Namespace Map ====
@@ -56,13 +57,13 @@ class XPath:
 
     def __get__(self, instance: Any, owner=None) -> str | int | float | list | datetime | None:
         if instance is None:
-            return self
+            return None
         value = self.lookup(instance._xml_tree)
         instance.__dict__[self.attrib_name] = value
         return value
 
     def lookup(self, xml: etree._ElementTree) -> str | int | float | list | datetime | None:
-        value = None
+        value: str | list[str] | int | float | datetime | None = None
         if xml is None or xml.getroot() is None:
             logging.warning("XML tree or root is None.")
             return None
@@ -70,13 +71,13 @@ class XPath:
         try:
             ele = xml.find(f'.//{self.tag}')
             if self.datatype == 'text':
-                if ele is not None:
+                if ele is not None and ele.text is not None:
                     value = ele.text.strip()
                 else:
                     ele = xml.find(f".//{NS_MAP.get('rdf')}Description")
                     if ele is not None and ele.attrib:
                         if self.tag in ele.attrib:
-                            value = ele.attrib[self.tag].strip()
+                            value = str(ele.attrib[self.tag].strip())
 
             elif self.datatype == 'bag':
                 if ele is not None and len(ele) == 1:
@@ -104,7 +105,7 @@ class XPath:
             logging.error(f"An unexpected error occurred during XML lookup for tag '{self.tag}': {e}")
             return None
 
-        if value and not isinstance(value, self.annotation):
+        if value and self.annotation is not None and not isinstance(value, self.annotation):
             try:
                 value = cast_datatype(_value=value, _data_type=self.annotation)
             except (TypeError, ValueError, KeyError, ParserError):
