@@ -6,43 +6,43 @@
 
 **Supported Metadata Namespaces**
 
-| Namespace           | Dataclass Attribute                          | Key Extracted Fields                                                                                                                                                                |
-|:--------------------|:---------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Dublin Core**     | `meta.metadata.dc`                           | `creator`, `description`, `format`, `rights`, `subject` (keywords), `title`                                                                                                         |
-| **Basic XMP**       | `meta.metadata.xmp`                          | `CreateDate`, `CreatorTool`, `Identifier`, `Label`, `MetadataDate`, `ModifyDate`, `Nickname`, `Rating`                                                                              |
-| **XMP Rights**      | `meta.metadata.xmpRights`                    | `Certificate`, `Marked`, `Owner`, `UsageTerms`, `WebStatement`                                                                                                                      |
-| **XMP MM**          | `meta.metadata.xmpMM`                        | `DocumentID`, `OriginalDocumentID`, `InstanceID`                                                                                                                                    |
-| **EXIF Data**       | `meta.metadata.exif`                         | `ResolutionUnit`, `ExifOffset`, `ImageDescription`, `DateTime`, `DateTimeOriginal`, `Make`, `Model`, `Orientation`, `Software`, `YResolution`, `Copyright`, `XResolution`, `Artist` |
-| **Photoshop**       | `meta.metadata.photoshop`                    | `DateCreated`, `Urgency`, `City`, `State`, `TransmissionReference`                                                                                                                  |
-| **IPTC Core & Ext** | `meta.metadata.Iptc4xmpCore` / `Iptc4xmpExt` | `Location`, `CountryCode`, `AltTextAccessibility`, `PersonInImage`                                                                                                                  |
-| **Camera & Lens**   | `meta.metadata.aux` / `tiff`                 | `SerialNumber`, `LensInfo`, `Lens`, `LensSerialNumber`, `FlashCompensation`, `FujiRatingAlreadyApplied`, `Make`, `Model`                                                            |
+| Namespace           | Dataclass Attribute                     | Key Extracted Fields                                                                                                                                                                |
+|:--------------------|:----------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Dublin Core**     | `metadata.dc`                           | `creator`, `description`, `format`, `rights`, `subject` (keywords), `title`                                                                                                         |
+| **Basic XMP**       | `metadata.xmp`                          | `CreateDate`, `CreatorTool`, `Identifier`, `Label`, `MetadataDate`, `ModifyDate`, `Nickname`, `Rating`                                                                              |
+| **XMP Rights**      | `metadata.xmpRights`                    | `Certificate`, `Marked`, `Owner`, `UsageTerms`, `WebStatement`                                                                                                                      |
+| **XMP MM**          | `metadata.xmpMM`                        | `DocumentID`, `OriginalDocumentID`, `InstanceID`                                                                                                                                    |
+| **EXIF Data**       | `metadata.exif`                         | `ResolutionUnit`, `ExifOffset`, `ImageDescription`, `DateTime`, `DateTimeOriginal`, `Make`, `Model`, `Orientation`, `Software`, `YResolution`, `Copyright`, `XResolution`, `Artist` |
+| **Photoshop**       | `metadata.photoshop`                    | `DateCreated`, `Urgency`, `City`, `State`, `TransmissionReference`                                                                                                                  |
+| **IPTC Core & Ext** | `metadata.Iptc4xmpCore` / `Iptc4xmpExt` | `Location`, `CountryCode`, `AltTextAccessibility`, `PersonInImage`                                                                                                                  |
+| **Camera & Lens**   | `metadata.aux` / `tiff`                 | `SerialNumber`, `LensInfo`, `Lens`, `LensSerialNumber`, `FlashCompensation`, `FujiRatingAlreadyApplied`, `Make`, `Model`                                                            |
 
 ## Usage
 
 ```python
-from pillow_metadata import Metadata
 from PIL import Image
+from pillow_metadata import Metadata
 
 # open an image using Pillow
 pil_img = Image.open("./path/to/img.jpg")
 
 # construct a new Metadata object based on the PIL Image.
-meta = Metadata(pil_img)
+image_metadata = Metadata(pil_img)
 
 # retrieve the image's filename (path)
 # same as pil_img.filename
-filename = meta.filename
+filename = image_metadata.filename
 
 # retrieve a list of keywords applied to the image
-keywords = meta.metadata.dc.subject
+keywords = image_metadata.metadata.dc.subject
 
 # retrieve the image's create date
-xmp_date = meta.metadata.xmp.CreateDate
-photoshop_date = meta.metadata.photoshop.DateCreated
-exif_date = meta.metadata.exif.DateTimeOriginal
+xmp_date = image_metadata.metadata.xmp.CreateDate
+photoshop_date = image_metadata.metadata.photoshop.DateCreated
+exif_date = image_metadata.metadata.exif.DateTimeOriginal
 
 # get the image's capture date
-capture_date = meta.get_capture_date()
+capture_date = image_metadata.get_capture_date()
 
 ```
 
