@@ -5,7 +5,7 @@
 
 # Pillow-Metadata
 
-`Pillow-Metadata` transforms raw XMP XML packets and integer-keyed EXIF dictionaries extracted from Pillow (`PIL.Image`) into structured, type-hinted Python dataclasses. It provides a lightweight, pure-Python abstraction layer that makes XMP image metadata accessible via readable dot-notation properties without requiring system-level C libraries or CLI tools.
+`Pillow-Metadata` transforms raw XMP XML packets and integer-keyed EXIF dictionaries extracted from Pillow (`PIL.Image`) image info into structured, type-hinted Python dataclasses. It provides a lightweight, pure-Python abstraction layer that makes XMP image metadata accessible via readable dot-notation properties without requiring system-level C libraries or CLI tools.
 
 **Supported Metadata Namespaces**
 
@@ -54,7 +54,7 @@ capture_date = image_metadata.get_capture_date()
 Install with pip using the link to the github project.
 
 ```commandline
-pip install https://github.com/peterjakubowski/Pillow-Metadata/archive/main.zip
+pip install https://github.com/peterjakubowski/Pillow-Metadata/
 
 ```
 
