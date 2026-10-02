@@ -6,6 +6,7 @@
 # standardized Python dataclass data structure from a Pillow (PIL) source image.
 #
 
+import inspect
 import logging
 from datetime import datetime
 from typing import Any
@@ -105,7 +106,8 @@ def build_exif_dictionary(_exif: Image.Exif, _exif_object: object):
     for tag, value in _exif.items():
         exif_tag = Image.ExifTags.TAGS.get(tag, str(tag))
         if hasattr(_exif_object, exif_tag):
-            if not isinstance(value, data_type := _exif_object.__annotations__[exif_tag]):
+            annotations_dict = inspect.get_annotations(type(_exif_object))
+            if not isinstance(value, data_type := annotations_dict[exif_tag]):
                 try:
                     value = cast_datatype(_value=value, _data_type=data_type)
                 except (TypeError, ValueError, KeyError, ParserError):
