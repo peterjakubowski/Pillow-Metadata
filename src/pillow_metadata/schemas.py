@@ -6,6 +6,7 @@
 # standardized Python dataclass data structure from a Pillow (PIL) source image.
 #
 
+import inspect
 import logging
 from dataclasses import InitVar, dataclass, field
 from datetime import datetime
@@ -53,9 +54,9 @@ class XPath:
         self.tag = tag
         self.datatype = xmp_data_type
 
-    def __set_name__(self, owner: object, name: str):
+    def __set_name__(self, owner: type, name: str):
         self.attrib_name = name
-        self.annotation = owner.__annotations__.get(name)
+        self.annotation = inspect.get_annotations(owner).get(name)
 
     def __get__(self, instance: Any, owner=None) -> str | int | float | list | datetime | None:
         if instance is None:
@@ -141,7 +142,8 @@ class Xml:
 
     def to_dict(self, include_none: bool = False) -> dict:
         data = {}
-        for attr in getattr(self, '__annotations__', {}):
+        annotations_dict = inspect.get_annotations(type(self))
+        for attr in annotations_dict:
             if attr.startswith('_'):
                 continue
             val = getattr(self, attr, None)
@@ -447,7 +449,8 @@ class Exif:
 
     def to_dict(self, include_none: bool = False) -> dict:
         data = {}
-        for attr in getattr(self, '__annotations__', {}):
+        annotations_dict = inspect.get_annotations(type(self))
+        for attr in annotations_dict:
             if attr.startswith('_'):
                 continue
             val = getattr(self, attr, None)
