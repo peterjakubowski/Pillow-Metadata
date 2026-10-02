@@ -1,4 +1,5 @@
 ![Run Python Tests](https://github.com/peterjakubowski/Pillow-Metadata/actions/workflows/ci.yaml/badge.svg)
+<img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="python" />
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;"></a>
   <a href="https://github.com/python/mypy"><img src="https://img.shields.io/badge/mypy-checked-blue" alt="mypy" style="max-width:100%;"></a>
 
