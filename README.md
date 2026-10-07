@@ -54,7 +54,7 @@ capture_date = image_metadata.get_capture_date()
 Install with pip using the link to the github project.
 
 ```commandline
-pip install https://github.com/peterjakubowski/Pillow-Metadata/
+pip install git+https://github.com/peterjakubowski/Pillow-Metadata/
 
 ```
 
